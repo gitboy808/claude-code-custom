@@ -9,7 +9,7 @@ webup-skills-cc — Claude Code marketplace plugin providing utility skills for 
 ```
 skills/
 └── [cc-hacks]                 # Claude Code customization skills
-    └── buddy-reroll/          # webup-buddy-reroll: Reroll /buddy companion to target species+rarity
+    └── webup-buddy-reroll/     # Reroll /buddy companion to target species+rarity
 ```
 
 Each skill contains:
