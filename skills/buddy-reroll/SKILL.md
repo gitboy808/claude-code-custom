@@ -73,13 +73,15 @@ npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species dragon --rarity legendary -
 
 ## Workflow
 
-1. Ask user which species they want (present the 18-species table above)
-2. Ask target rarity (default: legendary)
-3. Run the script with `--apply`:
+1. Use `AskUserQuestion` to ask the user to pick a species AND a rarity in a single prompt (two questions):
+   - **Species question**: Present 4 popular options (dragon, cat, duck, axolotl) as choices. The user can type any of the 18 species via "Other".
+   - **Rarity question**: Present all 5 tiers (legendary as first/recommended, then epic, rare, uncommon, common).
+   - Do NOT skip this step. Always ask even if the user mentioned a species — confirm their choice.
+2. Run the script with `--apply`:
    ```bash
    npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species <choice> --rarity <choice> --apply
    ```
-4. Tell user to restart Claude Code and run `/buddy` to hatch the new companion
+3. Tell user to restart Claude Code and run `/buddy` to hatch the new companion
 
 ## Manual Apply
 
