@@ -27,7 +27,7 @@ npx skills add webup/skills-cc -s webup-buddy-reroll -g
 
 Claude Code 的宠物系统是确定性的：`hash(userID + SALT)` 始终生成同一只宠物。本技能通过暴力搜索，找到一个能映射到目标组合的 userID。
 
-> ⚠️ **注意：** 仅适用于 API 用户。Pro/Max 订阅用户的 `userID` 绑定账户，无法替换。
+> **API 用户**：直接可用。**Pro/Max 订阅用户**：技能会自动检测 `accountUuid` 并引导你完成 OAuth 设置以绕过锁定 —— 无需手动操作。
 
 **在 Claude Code 中调用：**
 

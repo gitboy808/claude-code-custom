@@ -145,6 +145,7 @@ if (shouldApply) {
     const config = JSON.parse(readFileSync(configPath, 'utf8'))
     const oldUid = config.userID
     config.userID = best.uid
+    delete config.accountUuid
     config.companion = null
     writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n')
     console.log(`\nApplied to ${configPath}`)

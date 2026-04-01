@@ -27,7 +27,7 @@ npx skills add webup/skills-cc -s webup-buddy-reroll -g
 
 Claude Code のバディシステムは決定的：`hash(userID + SALT)` は常に同じペットを生成します。このスキルは目的の組み合わせにマッピングされる userID をブルートフォースで探します。
 
-> ⚠️ **注意：** API ユーザー限定。Pro/Max プランのサブスクライバーは `userID` がアカウントに紐付けられているため使用できません。
+> **API ユーザー**：そのまま利用可能。**Pro/Max サブスクライバー**：スキルが `accountUuid` を自動検出し、ロックを回避する OAuth セットアップを案内します。手動操作は不要です。
 
 **Claude Code での呼び出し方：**
 

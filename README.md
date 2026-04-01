@@ -27,7 +27,7 @@ Reroll your `/buddy` companion to any species and rarity — including ✨ legen
 
 Claude Code's buddy system is deterministic: `hash(userID + SALT)` always produces the same pet. This skill brute-forces a userID that maps to your desired combination.
 
-> ⚠️ **Note:** Only works for API users. Pro/Max Plan subscribers have a locked `userID` and cannot reroll.
+> **API users**: works directly. **Pro/Max subscribers**: the skill auto-detects `accountUuid` and walks you through an OAuth setup that bypasses the lock — no manual steps needed.
 
 **Invoke in Claude Code:**
 
