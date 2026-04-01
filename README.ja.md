@@ -7,13 +7,12 @@ Claude Code ユーティリティスキル —— カスタマイズとハック
 ## インストール
 
 ```bash
-# 対話的にスキルを閲覧・選択
 npx skills find webup/skills-cc
-
-# 全スキルをグローバルインストール
+```
+```bash
 npx skills add webup/skills-cc -g
-
-# buddy-reroll のみグローバルインストール
+```
+```bash
 npx skills add webup/skills-cc -s webup-buddy-reroll -g
 ```
 

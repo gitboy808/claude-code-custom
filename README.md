@@ -7,13 +7,12 @@ Claude Code utility skills for customization and hacks.
 ## Install
 
 ```bash
-# Browse & pick skills interactively
 npx skills find webup/skills-cc
-
-# Install all skills globally
+```
+```bash
 npx skills add webup/skills-cc -g
-
-# Install only buddy-reroll globally
+```
+```bash
 npx skills add webup/skills-cc -s webup-buddy-reroll -g
 ```
 
