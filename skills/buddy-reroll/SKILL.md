@@ -1,5 +1,5 @@
 ---
-name: buddy-reroll
+name: webup-buddy-reroll
 description: Reroll Claude Code /buddy companion to a target species and rarity. Use when the user wants to change their buddy pet, get a legendary companion, reroll their buddy, or is unhappy with their current /buddy result. Triggers on "reroll buddy", "change buddy", "legendary buddy", "new companion", "buddy hack", "换宠物", "重新抽", "传说宠物", "バディ変更", "伝説バディ", or similar.
 ---
 
