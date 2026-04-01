@@ -4,18 +4,37 @@ Claude Code utility skills for customization and hacks.
 
 [中文](README.zh.md) | [日本語](README.ja.md)
 
+## Install
+
+```bash
+# Browse & pick skills interactively
+npx skills find webup/skills-cc
+
+# Install all skills globally
+npx skills add webup/skills-cc -g
+
+# Install only buddy-reroll globally
+npx skills add webup/skills-cc -s webup-buddy-reroll -g
+```
+
 ## Skills
 
-### buddy-reroll
+### webup-buddy-reroll
 
 Reroll your `/buddy` companion to any species and rarity — including legendary.
 
 Claude Code's buddy system is deterministic: `hash(userID + SALT)` always produces the same pet. This skill brute-forces a userID that maps to your desired combination.
 
-**Usage:**
+> **Note:** Only works for API users. Pro/Max Plan subscribers have a locked `userID` and cannot reroll.
 
-```bash
-npx -y bun skills/buddy-reroll/scripts/reroll.mjs --species dragon --rarity legendary --apply
+**Invoke in Claude Code:**
+
+```
+# No args — interactive prompt to choose species and rarity
+/webup-buddy-reroll
+
+# With args — skip prompt, lock choice directly
+/webup-buddy-reroll dragon legendary
 ```
 
 **18 Species:**
@@ -28,29 +47,9 @@ npx -y bun skills/buddy-reroll/scripts/reroll.mjs --species dragon --rarity lege
 
 **5 Rarities:** ★ common (60%) · ★★ uncommon (25%) · ★★★ rare (10%) · ★★★★ epic (4%) · ★★★★★ legendary (1%)
 
-**Options:**
-
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--species` | dragon | Target species |
-| `--rarity` | legendary | Minimum rarity threshold |
-| `--max` | 1000000 | Max iterations |
-| `--apply` | off | Auto-write to `~/.claude.json` |
-
-After running with `--apply`, restart Claude Code and run `/buddy` to meet your new companion.
+After reroll, restart Claude Code and run `/buddy` to meet your new companion.
 
 > **Note:** Requires Bun runtime (`Bun.hash()` matches Claude Code's internal hashing). Node.js will produce wrong results.
-
-## Install as Claude Code Plugin
-
-```bash
-# From local path
-/plugin install /path/to/skills-cc
-
-# Or add the marketplace and install
-/plugin marketplace add <repo-url>
-/plugin install skills-cc
-```
 
 ## License
 

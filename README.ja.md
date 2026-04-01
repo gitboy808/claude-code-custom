@@ -4,18 +4,37 @@ Claude Code ユーティリティスキル —— カスタマイズとハック
 
 [English](README.md) | [中文](README.zh.md)
 
+## インストール
+
+```bash
+# 対話的にスキルを閲覧・選択
+npx skills find webup/skills-cc
+
+# 全スキルをグローバルインストール
+npx skills add webup/skills-cc -g
+
+# buddy-reroll のみグローバルインストール
+npx skills add webup/skills-cc -s webup-buddy-reroll -g
+```
+
 ## スキル一覧
 
-### buddy-reroll
+### webup-buddy-reroll
 
 `/buddy` コンパニオンを好きな種族・レアリティに引き直す —— レジェンダリーも可能。
 
 Claude Code のバディシステムは決定的：`hash(userID + SALT)` は常に同じペットを生成します。このスキルは目的の組み合わせにマッピングされる userID をブルートフォースで探します。
 
-**使い方：**
+> **注意：** API ユーザー限定。Pro/Max プランのサブスクライバーは `userID` がアカウントに紐付けられているため使用できません。
 
-```bash
-npx -y bun skills/buddy-reroll/scripts/reroll.mjs --species dragon --rarity legendary --apply
+**Claude Code での呼び出し方：**
+
+```
+# 引数なし — 対話的に種族とレアリティを選択
+/webup-buddy-reroll
+
+# 引数あり — プロンプトをスキップし直接指定
+/webup-buddy-reroll dragon legendary
 ```
 
 **18 種族：**
@@ -28,33 +47,9 @@ npx -y bun skills/buddy-reroll/scripts/reroll.mjs --species dragon --rarity lege
 
 **5 段階レアリティ：** ★ common (60%) · ★★ uncommon (25%) · ★★★ rare (10%) · ★★★★ epic (4%) · ★★★★★ legendary (1%)
 
-**オプション：**
-
-| フラグ | デフォルト | 説明 |
-|--------|-----------|------|
-| `--species` | dragon | 目標種族 |
-| `--rarity` | legendary | 最低レアリティ |
-| `--max` | 1000000 | 最大イテレーション数 |
-| `--apply` | オフ | `~/.claude.json` に自動書き込み |
-
-`--apply` 付きで実行後、Claude Code を再起動して `/buddy` で新しいコンパニオンを迎えましょう。
+リロール後、Claude Code を再起動して `/buddy` で新しいコンパニオンを迎えましょう。
 
 > **注意：** Bun ランタイムが必要です（`Bun.hash()` が Claude Code 内部のハッシュと一致）。Node.js では正しい結果が得られません。
-
-## Claude Code プラグインとしてインストール
-
-```bash
-# ローカルパスからインストール
-/plugin install /path/to/skills-cc
-```
-
-## 仕組み
-
-1. **Bones（骨格）**：外観は `hash(userID + SALT)` で決定的に生成、保存されずリアルタイム計算
-2. **Soul（魂）**：名前と性格はモデルが生成、`~/.claude.json` の `companion` フィールドに保存
-3. **重要な注意点**：Claude Code は Bun でバンドルされており、内部で `Bun.hash()`（xxHash64）を使用。Node.js の FNV-1a では全く異なる結果になる
-
-`userID` を変更しても会話履歴、API キー、ローカル設定には影響しません —— テレメトリのバケッティングとバディシードにのみ使用されます。
 
 ## ライセンス
 
