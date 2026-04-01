@@ -71,12 +71,21 @@ npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species dragon --rarity legendary -
 | epic | ★★★★ | 4% | ~450 |
 | legendary | ★★★★★ | 1% | ~1800 |
 
+## Invocation
+
+This skill can be invoked with or without arguments:
+
+- **No args** (`/webup-buddy-reroll`): Prompts the user to choose species and rarity interactively via `AskUserQuestion` before running.
+- **With args** (`/webup-buddy-reroll dragon legendary`): Skips the prompt and locks the choice to the given species and rarity directly.
+
 ## Workflow
 
-1. Use `AskUserQuestion` to ask the user to pick a species AND a rarity in a single prompt (two questions):
+1. **If no args provided**: Use `AskUserQuestion` to ask the user to pick a species AND a rarity in a single prompt (two questions):
    - **Species question**: Present 4 popular options (dragon, cat, duck, axolotl) as choices. The user can type any of the 18 species via "Other".
    - **Rarity question**: Present all 5 tiers (legendary as first/recommended, then epic, rare, uncommon, common).
    - Do NOT skip this step. Always ask even if the user mentioned a species — confirm their choice.
+
+   **If args provided**: Parse `<species>` and `<rarity>` from the args. Skip the prompt and proceed directly.
 2. Run the script with `--apply`:
    ```bash
    npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species <choice> --rarity <choice> --apply
