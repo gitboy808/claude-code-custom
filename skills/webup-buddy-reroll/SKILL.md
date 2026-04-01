@@ -1,6 +1,6 @@
 ---
 name: webup-buddy-reroll
-description: Reroll Claude Code /buddy companion to a target species and rarity. Use when the user wants to change their buddy pet, get a legendary companion, reroll their buddy, or is unhappy with their current /buddy result. Triggers on "reroll buddy", "change buddy", "legendary buddy", "new companion", "buddy hack", "换宠物", "重新抽", "传说宠物", "バディ変更", "伝説バディ", or similar.
+description: Reroll Claude Code /buddy companion to a target species and rarity, or rename/customize companion name and personality. Triggers on "reroll buddy", "change buddy", "legendary buddy", "new companion", "buddy hack", "rename buddy", "buddy name", "buddy personality", "换宠物", "重新抽", "传说宠物", "改名", "宠物名字", "バディ変更", "伝説バディ", "バディ名前", or similar.
 ---
 
 # Buddy Reroll
@@ -29,6 +29,7 @@ To reroll: replace `userID` in `~/.claude.json`, clear `companion` field, restar
 |--------|---------|
 | `scripts/reroll.mjs` | Brute-force target species+rarity, optionally apply to config |
 | `scripts/oauth-setup.mjs` | OAuth config helper for Pro/Max subscribers (--check/--prepare/--verify/--restore) |
+| `scripts/rename.mjs` | Change companion name and/or personality (--name/--desc) |
 
 ## Prerequisites
 
@@ -81,7 +82,9 @@ This skill can be invoked with or without arguments:
 - **No args** (`/webup-buddy-reroll`): Prompts the user to choose species and rarity interactively via `AskUserQuestion` before running.
 - **With args** (`/webup-buddy-reroll dragon legendary`): Skips the prompt and locks the choice to the given species and rarity directly.
 
-## Workflow
+**Detect intent**: If the user's message is about renaming/customizing (name, personality, description), skip the Reroll Workflow and go directly to the **Rename Workflow** section below.
+
+## Reroll Workflow
 
 0. **Detect account type**: Run the check script to see if `accountUuid` exists in `~/.claude.json`:
    ```bash
@@ -136,6 +139,24 @@ If `--apply` was not used:
 1. Copy the output userID
 2. Edit `~/.claude.json`: replace `"userID"` value, set `"companion": null`
 3. Restart Claude Code → `/buddy`
+
+## Rename / Customize Companion
+
+Change the companion's name and/or personality description without rerolling species or rarity.
+
+### Rename Workflow
+
+1. Use `AskUserQuestion` to ask what the user wants to change (one question, multiSelect):
+   - **Name**: "Change companion name"
+   - **Personality**: "Change companion personality/description"
+2. For **name**: ask the user for the exact name. Pass it directly.
+3. For **personality**: ask the user for a brief tip or vibe (e.g. "lazy cat that loves keyboards", "sarcastic robot"). Then **you** (Claude Code) generate a fun, creative personality description (1–2 sentences, matching the companion's species and the user's tip). Show the generated text to the user for confirmation before applying.
+4. Run the rename script:
+   ```bash
+   npx -y bun ${SKILL_DIR}/scripts/rename.mjs --name "<name>" --desc "<generated personality>"
+   ```
+   Omit `--name` or `--desc` if the user only wants to change one.
+5. Tell user to restart Claude Code for changes to take effect.
 
 ## Notes
 
