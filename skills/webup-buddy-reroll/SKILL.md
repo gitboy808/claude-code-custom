@@ -112,7 +112,7 @@ This skill can be invoked with or without arguments:
 ## Workflow
 
 1. **If no args provided**: Use `AskUserQuestion` to ask the user to pick a species AND a rarity in a single prompt (two questions):
-   - **Species question**: Present 4 popular options (dragon, cat, duck, axolotl) as choices. The user can type any of the 18 species via "Other".
+   - **Species question**: Present 4 popular options (dragon, cat, axolotl, capybara) as choices. Each option's `description` should list the remaining species so the user knows what's available via "Other", e.g. the first option's description: "Or type any of: duck, goose, blob, octopus, owl, penguin, turtle, snail, ghost, cactus, robot, rabbit, mushroom, chonk".
    - **Rarity question**: Present all 5 tiers (legendary as first/recommended, then epic, rare, uncommon, common).
    - Do NOT skip this step. Always ask even if the user mentioned a species — confirm their choice.
 
