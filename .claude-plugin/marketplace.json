@@ -1,0 +1,21 @@
+{
+  "name": "webup-skills-cc",
+  "owner": {
+    "name": "haili"
+  },
+  "metadata": {
+    "description": "Claude Code utility skills for customization and hacks",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "cc-hacks",
+      "description": "Claude Code customization and hack skills",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/buddy-reroll"
+      ]
+    }
+  ]
+}
