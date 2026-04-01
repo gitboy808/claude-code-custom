@@ -6,12 +6,15 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 ## 安装
 
+交互式浏览和选择技能：
 ```bash
 npx skills find webup/skills-cc
 ```
+全局安装全部技能：
 ```bash
 npx skills add webup/skills-cc -g
 ```
+全局仅安装 buddy-reroll：
 ```bash
 npx skills add webup/skills-cc -s webup-buddy-reroll -g
 ```
