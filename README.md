@@ -23,7 +23,7 @@ npx skills add webup/skills-cc -s webup-buddy-reroll -g
 
 ### 🎰 webup-buddy-reroll
 
-Reroll your `/buddy` companion to any species and rarity — including ✨ legendary.
+Reroll your `/buddy` companion to any species and rarity — including ✨ legendary. Also rename your companion and give it a custom personality.
 
 Claude Code's buddy system is deterministic: `hash(userID + SALT)` always produces the same pet. This skill brute-forces a userID that maps to your desired combination.
 
@@ -32,11 +32,17 @@ Claude Code's buddy system is deterministic: `hash(userID + SALT)` always produc
 **Invoke in Claude Code:**
 
 ```
-# No args — interactive prompt to choose species and rarity
+# Interactive — choose species, rarity, name, personality
 /webup-buddy-reroll
 
-# With args — skip prompt, lock choice directly
+# Reroll only
 /webup-buddy-reroll dragon legendary
+
+# Reroll + rename in one shot
+/webup-buddy-reroll dragon legendary 沧海九粟 爱打盹的小龙
+
+# Rename only (natural language)
+/webup-buddy-reroll rename to Nimbus, personality: sarcastic robot
 ```
 
 **🐾 18 Species:**
