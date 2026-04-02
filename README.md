@@ -59,6 +59,41 @@ After reroll, restart Claude Code and run `/buddy` to meet your new companion! �
 
 > ⚠️ **Note:** Requires Bun runtime (`Bun.hash()` matches Claude Code's internal hashing). Node.js will produce wrong results.
 
+### 📊 webup-statusline
+
+Generate and install a custom Claude Code status line — pick your elements, color theme, and prefix icon.
+
+Choose what to display (model, context bar, output style, git branch, directory, vim mode), pick a theme (Gruvbox Dark, Dracula, Robbyrussell, Minimal), and select a prefix icon for the output style indicator.
+
+**Invoke in Claude Code:**
+
+```
+# Interactive — pick elements, theme, icon
+/webup-statusline
+
+# Quick theme selection
+/webup-statusline dracula
+
+# Natural language
+/webup-statusline minimal with git and context bar
+```
+
+**🎨 4 Themes:**
+
+| Theme | Style |
+|-------|-------|
+| 🌾 Gruvbox Dark | Warm retro — teal, aqua, yellow, green |
+| 🧛 Dracula | Modern dark — purple, pink, cyan |
+| 💎 Robbyrussell | Classic oh-my-zsh — red dir, green arrow |
+| 🪶 Minimal | Clean — no decoration, dim separators |
+
+**Output example** (Gruvbox Dark):
+```
+✦ Opus 4.6 | [■■■■■■■■■■□□□□□□□□□□] 49% | ✦thinking | ◆ my-project | ⎇ main
+```
+
+> ⚠️ **Note:** Requires `jq` for JSON parsing in the generated status line script.
+
 ## 📄 License
 
 MIT
