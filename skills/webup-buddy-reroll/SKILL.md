@@ -79,10 +79,26 @@ npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species dragon --rarity legendary -
 
 This skill can be invoked with or without arguments:
 
-- **No args** (`/webup-buddy-reroll`): Prompts the user to choose species and rarity interactively via `AskUserQuestion` before running.
-- **With args** (`/webup-buddy-reroll dragon legendary`): Skips the prompt and locks the choice to the given species and rarity directly.
+- **No args** (`/webup-buddy-reroll`): Prompts the user interactively via `AskUserQuestion` before running.
+- **Reroll only** (`/webup-buddy-reroll dragon legendary`): Skips the prompt and locks to the given species and rarity.
+- **Reroll + rename** (`/webup-buddy-reroll dragon legendary 沧海九粟 爱打盹的小龙`): Reroll, then immediately apply the given name and personality.
+- **Rename only** (`/webup-buddy-reroll 改名叫沧海九粟，个性是爱打盹的小龙`): Skip reroll, only change name and/or personality.
 
-**Detect intent**: If the user's message is about renaming/customizing (name, personality, description), skip the Reroll Workflow and go directly to the **Rename Workflow** section below.
+### Arg parsing (natural language)
+
+The args string is free-form text. Use NLP to extract these fields:
+
+1. **species** — match against the 18 known species names (duck, goose, blob, cat, dragon, octopus, owl, penguin, turtle, snail, ghost, axolotl, capybara, cactus, robot, rabbit, mushroom, chonk). Also recognize Chinese/Japanese equivalents (龙=dragon, 猫=cat, etc.).
+2. **rarity** — match against the 5 tiers (common, uncommon, rare, epic, legendary) or equivalents (传说=legendary, 史诗=epic, etc.).
+3. **name** — a short proper name for the companion (e.g. "沧海九粟", "Nimbus", "小火"). Look for patterns like "叫X", "名字X", "named X", "name X", or a standalone proper noun that isn't a species/rarity keyword.
+4. **personality** — a description of the companion's vibe or character (e.g. "爱打盹的小龙", "sarcastic robot"). Look for patterns like "个性X", "性格X", "personality X", or descriptive phrases that aren't species/rarity/name.
+
+All four fields are optional. Any combination is valid.
+
+**Detect intent**:
+- If species or rarity found → **Reroll Workflow** (+ post-reroll rename if name/personality also found)
+- If only name and/or personality found (no species/rarity) → **Rename Workflow**
+- If no args at all → prompt interactively, detect from user's message whether they want reroll or rename
 
 ## Reroll Workflow
 
@@ -125,12 +141,17 @@ This skill can be invoked with or without arguments:
    - **Rarity question**: Present all 5 tiers (legendary as first/recommended, then epic, rare, uncommon, common).
    - Do NOT skip this step. Always ask even if the user mentioned a species — confirm their choice.
 
-   **If args provided**: Parse `<species>` and `<rarity>` from the args. Skip the prompt and proceed directly.
+   **If species/rarity parsed from args**: Skip the prompt and proceed directly.
 2. Run the script with `--apply`:
    ```bash
    npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species <choice> --rarity <choice> --apply
    ```
-3. Tell user to restart Claude Code and run `/buddy` to hatch the new companion.
+3. **If name or personality was parsed from args**: Run the rename script immediately after reroll (no restart needed between):
+   ```bash
+   npx -y bun ${SKILL_DIR}/scripts/rename.mjs --name "<parsed name>" --desc "<parsed personality>"
+   ```
+   Omit `--name` or `--desc` if only one was parsed.
+4. Tell user to restart Claude Code and run `/buddy` to hatch the new companion.
    - **If OAuth was used**: Remind user to start Claude with `CLAUDE_CODE_OAUTH_TOKEN=<TOKEN> claude` (not plain `claude`) to prevent `accountUuid` from being written back.
 
 ## Manual Apply
@@ -146,6 +167,8 @@ Change the companion's name and/or personality description without rerolling spe
 
 ### Rename Workflow
 
+**If name and/or personality were parsed from args**: Skip steps 1–3, go directly to step 4 with the parsed values. When personality is provided directly via args, use it as-is — skip the AI generation step.
+
 1. Use `AskUserQuestion` to ask what the user wants to change (one question, multiSelect):
    - **Name**: "Change companion name"
    - **Personality**: "Change companion personality/description"
@@ -153,9 +176,9 @@ Change the companion's name and/or personality description without rerolling spe
 3. For **personality**: ask the user for a brief tip or vibe (e.g. "lazy cat that loves keyboards", "sarcastic robot"). Then **you** (Claude Code) generate a fun, creative personality description (1–2 sentences, matching the companion's species and the user's tip). Show the generated text to the user for confirmation before applying.
 4. Run the rename script:
    ```bash
-   npx -y bun ${SKILL_DIR}/scripts/rename.mjs --name "<name>" --desc "<generated personality>"
+   npx -y bun ${SKILL_DIR}/scripts/rename.mjs --name "<name>" --desc "<personality>"
    ```
-   Omit `--name` or `--desc` if the user only wants to change one.
+   Omit `--name` or `--desc` if only one is being changed.
 5. Tell user to restart Claude Code for changes to take effect.
 
 ## Notes
