@@ -14,9 +14,9 @@ function getArg(name, def) {
 }
 const hasFlag = (name) => args.includes(`--${name}`)
 
-const elements = getArg('elements', 'model,context,style,git,dir').split(',').map(s => s.trim())
+const elements = getArg('elements', 'model,context,effort,git,dir').split(',').map(s => s.trim())
 const theme = getArg('theme', 'gruvbox')
-const icon = getArg('icon', '✦')
+const effortIconFlag = getArg('effort-icon', '')  // optional override; see themes.effort icons
 const install = hasFlag('install')
 
 // ── Theme definitions ──────────────────────────────────────────────
@@ -24,64 +24,84 @@ const themes = {
   gruvbox: {
     name: 'Gruvbox Dark',
     model:     '\\033[38;2;86;182;194m',   // bright teal
-    bar_fill:  '\\033[38;2;142;192;124m',  // aqua
+    ctx_ok:    '\\033[38;2;142;192;124m',  // aqua/green (>50% remaining)
+    ctx_warn:  '\\033[38;2;250;189;47m',   // yellow (20-50% remaining)
+    ctx_low:   '\\033[38;2;251;73;52m',    // red (<20% remaining)
     bar_empty: '\\033[38;2;80;73;69m',     // dark bg
     pct:       '\\033[38;2;251;241;199m',  // bright fg
-    style:     '\\033[38;2;211;134;155m',  // soft pink
     dir:       '\\033[38;2;152;195;121m',  // soft green
     git:       '\\033[38;2;143;175;209m',  // soft blue
     git_dirty: '\\033[38;2;224;175;104m',  // warm yellow
     vim:       '\\033[38;2;214;93;14m',    // orange
+    worktree:  '\\033[38;2;211;134;155m',  // soft pink
+    effort_high: '\\033[1;38;2;251;73;52m',   // bold red
+    effort_med:  '\\033[38;2;250;189;47m',    // yellow
+    effort_low:  '\\033[38;2;142;192;124m',   // green
+    effort_off:  '\\033[2;38;2;168;153;132m', // dim gray
     sep:       '\\033[38;2;102;92;84m',    // gray
-    icon:      '\\033[38;2;251;241;199m',  // bright fg
     separator: ' | ',
     bar_chars: ['■', '□'],
   },
   robbyrussell: {
     name: 'Robbyrussell',
     model:     '\\033[38;5;45m',   // cyan
-    bar_fill:  '\\033[38;5;32m',   // green
+    ctx_ok:    '\\033[38;5;32m',   // green
+    ctx_warn:  '\\033[38;5;220m',  // yellow
+    ctx_low:   '\\033[38;5;196m',  // red
     bar_empty: '\\033[2m',         // dim
     pct:       '\\033[38;5;220m',  // yellow
-    style:     '\\033[38;5;170m',  // magenta
-    dir:       '\\033[38;5;196m',  // red
+    dir:       '\\033[38;5;39m',   // blue — softer than red for folder
     git:       '\\033[38;5;32m',   // green
     git_dirty: '\\033[38;5;220m',  // yellow
     vim:       '\\033[38;5;45m',   // cyan
+    worktree:  '\\033[38;5;170m',  // magenta
+    effort_high: '\\033[1;38;5;196m',  // bold red
+    effort_med:  '\\033[38;5;220m',    // yellow
+    effort_low:  '\\033[38;5;32m',     // green
+    effort_off:  '\\033[2m',           // dim
     sep:       '\\033[2m',         // dim
-    icon:      '\\033[38;5;32m',   // green
     separator: ' · ',
     bar_chars: ['━', '─'],
   },
   minimal: {
     name: 'Minimal',
     model:     '\\033[0m',
-    bar_fill:  '\\033[0m',
+    ctx_ok:    '\\033[32m',       // green
+    ctx_warn:  '\\033[33m',       // yellow
+    ctx_low:   '\\033[31m',       // red
     bar_empty: '\\033[2m',
     pct:       '\\033[0m',
-    style:     '\\033[0m',
     dir:       '\\033[2m',
     git:       '\\033[0m',
     git_dirty: '\\033[33m',
     vim:       '\\033[0m',
+    worktree:  '\\033[2m',
+    effort_high: '\\033[1;31m',   // bold red
+    effort_med:  '\\033[33m',     // yellow
+    effort_low:  '\\033[32m',     // green
+    effort_off:  '\\033[2m',      // dim
     sep:       '\\033[2m',
-    icon:      '\\033[0m',
     separator: ' · ',
     bar_chars: ['▰', '▱'],
   },
   dracula: {
     name: 'Dracula',
     model:     '\\033[38;2;189;147;249m',  // purple
-    bar_fill:  '\\033[38;2;80;250;123m',   // green
+    ctx_ok:    '\\033[38;2;80;250;123m',   // green
+    ctx_warn:  '\\033[38;2;241;250;140m',  // yellow
+    ctx_low:   '\\033[38;2;255;85;85m',    // red
     bar_empty: '\\033[38;2;68;71;90m',     // comment
     pct:       '\\033[38;2;248;248;242m',  // fg
-    style:     '\\033[38;2;255;121;198m',  // pink
     dir:       '\\033[38;2;139;233;253m',  // cyan
     git:       '\\033[38;2;255;184;108m',  // orange
-    git_dirty: '\\033[38;2;255;85;85m',    // red
+    git_dirty: '\\033[38;2;241;250;140m',  // yellow (softer than red)
     vim:       '\\033[38;2;241;250;140m',  // yellow
-    sep:       '\\033[38;2;98;114;164m',   // comment bright
-    icon:      '\\033[38;2;189;147;249m',  // purple
+    worktree:  '\\033[38;2;255;121;198m',  // pink
+    effort_high: '\\033[1;38;2;255;85;85m',    // bold red
+    effort_med:  '\\033[38;2;241;250;140m',    // yellow
+    effort_low:  '\\033[38;2;80;250;123m',     // green
+    effort_off:  '\\033[2;38;2;98;114;164m',   // dim
+    sep:       '\\033[38;2;98;114;164m',    // comment bright
     separator: ' | ',
     bar_chars: ['■', '□'],
   },
@@ -95,10 +115,30 @@ if (!t) {
 
 // ── Element icons per theme ────────────────────────────────────────
 const elementIcons = {
-  gruvbox:      { model: '✦', context: '↯', dir: '◆', git: '⎇', vim: '⌨', style: '' },
-  robbyrussell: { model: '',  context: '',  dir: '',  git: '',  vim: '',  style: '' },
-  minimal:      { model: '',  context: '',  dir: '',  git: '',  vim: '',  style: '' },
-  dracula:      { model: '◈', context: '↯', dir: '◇', git: '⎇', vim: '⌨', style: '' },
+  gruvbox:      { model: '✦', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯' },
+  robbyrussell: { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: ''  },
+  minimal:      { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: ''  },
+  dracula:      { model: '◈', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯' },
+}
+
+// Effort icon presets — user can pick one via --effort-icon
+// All are narrow/text-mode glyphs; ϟ (Greek koppa) is default because it
+// reads as "lightning" while being consistently narrow in monospace fonts
+const EFFORT_ICON_PRESETS = {
+  arrow:  '↯',   // electric arrow — default (narrow, reads as intensity)
+  bolt:   'ϟ',   // Greek koppa — narrow lightning
+  flash:  '⚡',   // classic lightning — wide in emoji-presentation fonts
+  reason: '∴',   // therefore
+  dot:    '◉',   // filled circle
+  none:   '',    // hide the icon entirely
+}
+
+// Resolve effort icon: explicit flag > theme default
+function resolveEffortIcon(themeIcon) {
+  if (!effortIconFlag) return themeIcon
+  if (effortIconFlag === 'none') return ''
+  if (EFFORT_ICON_PRESETS[effortIconFlag] !== undefined) return EFFORT_ICON_PRESETS[effortIconFlag]
+  return effortIconFlag  // allow a raw character
 }
 const icons = elementIcons[theme]
 
@@ -114,16 +154,21 @@ function buildScript() {
   p('# Colors')
   p("readonly RST='\\033[0m'")
   p(`readonly C_MODEL='${t.model}'`)
-  p(`readonly C_BAR_FILL='${t.bar_fill}'`)
+  p(`readonly C_CTX_OK='${t.ctx_ok}'`)
+  p(`readonly C_CTX_WARN='${t.ctx_warn}'`)
+  p(`readonly C_CTX_LOW='${t.ctx_low}'`)
   p(`readonly C_BAR_EMPTY='${t.bar_empty}'`)
   p(`readonly C_PCT='${t.pct}'`)
-  p(`readonly C_STYLE='${t.style}'`)
   p(`readonly C_DIR='${t.dir}'`)
   p(`readonly C_GIT='${t.git}'`)
   p(`readonly C_GIT_DIRTY='${t.git_dirty}'`)
   p(`readonly C_VIM='${t.vim}'`)
+  p(`readonly C_WORKTREE='${t.worktree}'`)
+  p(`readonly C_EFFORT_HIGH='${t.effort_high}'`)
+  p(`readonly C_EFFORT_MED='${t.effort_med}'`)
+  p(`readonly C_EFFORT_LOW='${t.effort_low}'`)
+  p(`readonly C_EFFORT_OFF='${t.effort_off}'`)
   p(`readonly C_SEP='${t.sep}'`)
-  p(`readonly C_ICON='${t.icon}'`)
   p('')
   p(`readonly SEP="${t.separator}"`)
   p('')
@@ -138,24 +183,65 @@ function buildScript() {
   if (elements.includes('context')) {
     p("remaining=$(echo \"$input\" | jq -r '.context_window.remaining_percentage // \"\"')")
   }
-  if (elements.includes('style')) {
-    p("style=$(echo \"$input\" | jq -r '.output_style.name // \"\"')")
+  if (elements.includes('effort')) {
+    p('# Read effort level from settings (local overrides global)')
+    p('effort=""')
+    p('for f in "$HOME/.claude/settings.local.json" "$HOME/.claude/.claude/settings.local.json" "$HOME/.claude/settings.json"; do')
+    p('  if [ -z "$effort" ] && [ -f "$f" ]; then')
+    p('    effort=$(jq -r \'.effortLevel // empty\' "$f" 2>/dev/null)')
+    p('  fi')
+    p('done')
   }
   if (elements.includes('dir') || elements.includes('git')) {
     p("current_dir=$(echo \"$input\" | jq -r '.workspace.current_dir // \"\"')")
   }
+  if (elements.includes('dir')) {
+    p("original_repo_dir=$(echo \"$input\" | jq -r '.worktree.original_repo_dir // empty')")
+  }
   if (elements.includes('vim')) {
     p("vim_mode=$(echo \"$input\" | jq -r '.vim.mode // empty')")
   }
+  if (elements.includes('worktree') || elements.includes('git')) {
+    p("worktree_name=$(echo \"$input\" | jq -r '.worktree.name // empty')")
+    p("worktree_branch=$(echo \"$input\" | jq -r '.worktree.branch // empty')")
+  }
   p('')
 
-  // Git branch detection
+  // Worktree detection — prefer JSON, fall back to git CLI so external worktrees
+  // (e.g. created via `git worktree add` or Codex) are still detected
+  if (elements.includes('worktree')) {
+    p('# Worktree detection (git fallback for external worktrees)')
+    p('is_worktree=0')
+    p('if [ -n "$worktree_name" ]; then')
+    p('  is_worktree=1')
+    p('elif [ -n "$current_dir" ] && git -C "$current_dir" --no-optional-locks rev-parse --git-dir > /dev/null 2>&1; then')
+    p('  _gd=$(git -C "$current_dir" --no-optional-locks rev-parse --git-dir 2>/dev/null)')
+    p('  _gcd=$(git -C "$current_dir" --no-optional-locks rev-parse --git-common-dir 2>/dev/null)')
+    p('  if [ -n "$_gd" ] && [ -n "$_gcd" ] && [ "$_gd" != "$_gcd" ]; then')
+    p('    is_worktree=1')
+    p('    if [ -z "$worktree_name" ]; then')
+    p('      # Use parent dir basename as worktree id (e.g. ~/.codex/worktrees/46a6/clawmaster -> 46a6)')
+    p('      _parent=$(dirname "$current_dir")')
+    p('      worktree_name=$(basename "$_parent")')
+    p('      # Fall back to current dir basename if parent is a generic bucket')
+    p('      case "$worktree_name" in')
+    p('        worktrees|wt|.codex|.claude) worktree_name=$(basename "$current_dir") ;;')
+    p('      esac')
+    p('    fi')
+    p('  fi')
+    p('fi')
+    p('')
+  }
+
+  // Git branch detection — prefer worktree.branch from input JSON when present
   if (elements.includes('git')) {
-    p('# Git branch')
-    p('git_branch=""')
+    p('# Git branch (prefer worktree.branch from input, fall back to git CLI)')
+    p('git_branch="$worktree_branch"')
     p('git_dirty=0')
     p('if [ -n "$current_dir" ] && git -C "$current_dir" --no-optional-locks rev-parse --git-dir > /dev/null 2>&1; then')
-    p('  git_branch=$(git -C "$current_dir" --no-optional-locks branch --show-current 2>/dev/null)')
+    p('  if [ -z "$git_branch" ]; then')
+    p('    git_branch=$(git -C "$current_dir" --no-optional-locks branch --show-current 2>/dev/null)')
+    p('  fi')
     p('  if [ -n "$git_branch" ]; then')
     p('    if ! git -C "$current_dir" --no-optional-locks diff --quiet 2>/dev/null || \\')
     p('       ! git -C "$current_dir" --no-optional-locks diff --cached --quiet 2>/dev/null; then')
@@ -166,28 +252,39 @@ function buildScript() {
     p('')
   }
 
-  // Shortened directory
+  // Shortened directory — when in a worktree, show the original repo basename
+  // so the worktree element can display the worktree name separately
   if (elements.includes('dir')) {
-    p('# Shorten directory')
+    p('# Shorten directory (prefer original repo when in a worktree)')
     p('short_dir=""')
-    p('if [ -n "$current_dir" ]; then')
+    p('if [ -n "$original_repo_dir" ]; then')
+    p("  short_dir=$(basename \"$original_repo_dir\")")
+    p('elif [ -n "$current_dir" ]; then')
     p("  short_dir=$(basename \"$current_dir\")")
     p('fi')
     p('')
   }
 
-  // Context bar builder
+  // Context bar builder — color scales with remaining capacity
+  // green (>50% left) → yellow (20-50%) → red (<20%)
   if (elements.includes('context')) {
-    p('# Progress bar')
+    p('# Progress bar (color scales with remaining context)')
     p('bar=""')
     p('if [ -n "$remaining" ]; then')
     p('  used=$((100 - remaining))')
     p('  filled=$((used / 5))')
     p('  empty=$((20 - filled))')
+    p('  if [ "$remaining" -lt 20 ]; then')
+    p('    ctx_color="$C_CTX_LOW"')
+    p('  elif [ "$remaining" -lt 50 ]; then')
+    p('    ctx_color="$C_CTX_WARN"')
+    p('  else')
+    p('    ctx_color="$C_CTX_OK"')
+    p('  fi')
     p(`  bar="\${C_SEP}[\${RST}"`)
-    p(`  for ((i=0; i<filled; i++)); do bar+="\${C_BAR_FILL}${t.bar_chars[0]}\${RST}"; done`)
+    p(`  for ((i=0; i<filled; i++)); do bar+="\${ctx_color}${t.bar_chars[0]}\${RST}"; done`)
     p(`  for ((i=0; i<empty; i++)); do bar+="\${C_BAR_EMPTY}${t.bar_chars[1]}\${RST}"; done`)
-    p(`  bar+="\${C_SEP}]\${RST} \${C_PCT}\${used}%\${RST}"`)
+    p(`  bar+="\${C_SEP}]\${RST} \${ctx_color}\${used}%\${RST}"`)
     p('fi')
     p('')
   }
@@ -217,10 +314,18 @@ function buildScript() {
     p('')
   }
 
-  if (elements.includes('style')) {
-    const si = icon  // user-chosen prefix icon for output style
-    p('if [ -n "$style" ] && [ "$style" != "default" ]; then')
-    p(`  parts+=("\${C_STYLE}${si}\${style}\${RST}")`)
+  if (elements.includes('effort')) {
+    const rawEi = resolveEffortIcon(icons.effort)
+    const ei = rawEi ? `${rawEi} ` : ''  // space only when icon is present
+    p('# Color effort by level (max/xhigh/high share the bold-red pressure tier)')
+    p('if [ -n "$effort" ]; then')
+    p('  case "$effort" in')
+    p('    max|MAX|Max|xhigh|XHIGH|XHigh|high|High|HIGH)  effort_color="$C_EFFORT_HIGH" ;;')
+    p('    medium|Medium|MEDIUM)                          effort_color="$C_EFFORT_MED" ;;')
+    p('    low|Low|LOW|xlow|XLow|XLOW|minimal|Minimal)    effort_color="$C_EFFORT_LOW" ;;')
+    p('    *)                                             effort_color="$C_EFFORT_OFF" ;;')
+    p('  esac')
+    p(`  parts+=("\${effort_color}${ei}\${effort}\${RST}")`)
     p('fi')
     p('')
   }
@@ -237,6 +342,14 @@ function buildScript() {
     const di = icons.dir ? `${icons.dir} ` : ''
     p('if [ -n "$short_dir" ]; then')
     p(`  parts+=("\${C_DIR}${di}\${short_dir}\${RST}")`)
+    p('fi')
+    p('')
+  }
+
+  if (elements.includes('worktree')) {
+    const wi = icons.worktree ? `${icons.worktree} ` : ''
+    p('if [ "$is_worktree" -eq 1 ] && [ -n "$worktree_name" ]; then')
+    p(`  parts+=("\\033[1m\${C_WORKTREE}${wi}worktree:\${worktree_name}\${RST}")`)
     p('fi')
     p('')
   }

@@ -1,15 +1,15 @@
 ---
 name: webup-statusline
-description: Generate and install a custom Claude Code status line with selectable elements, color themes, and prefix icons. Triggers on "status line", "statusline", "customize status", "status bar", "状态栏", "ステータスライン", or similar.
+description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", "ステータスライン", or similar.
 ---
 
 # Status Line Generator
 
-Generate a custom Claude Code status line script with your choice of elements, color theme, and prefix icon. Installs directly to `~/.claude/settings.json`.
+Generate a custom Claude Code status line script with your choice of columns and a color theme. Installs directly to `~/.claude/settings.json`.
 
 ## How It Works
 
-Claude Code supports custom status lines via a shell script configured in `~/.claude/settings.json`. The script receives session JSON on stdin (model, context window, output style, workspace, etc.) and prints formatted text to stdout.
+Claude Code supports custom status lines via a shell script configured in `~/.claude/settings.json`. The script receives session JSON on stdin (model, context window, workspace, vim, worktree, etc.) and prints formatted text to stdout.
 
 This skill generates a bash script tailored to your preferences and installs it automatically.
 
@@ -36,126 +36,151 @@ This skill generates a bash script tailored to your preferences and installs it 
 
 ```bash
 # Preview generated script
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,style,git,dir --theme gruvbox --icon ✦
+npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme gruvbox
 
 # Generate and install
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,style,git,dir --theme gruvbox --icon ✦ --install
+npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme dracula --install
 ```
 
 ### Options
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--elements <list>` | `model,context,style,git,dir` | Comma-separated elements to display |
-| `--theme <name>` | `gruvbox` | Color theme |
-| `--icon <char>` | `✦` | Prefix icon shown before output style name |
+| `--elements <list>` | `model,context,effort,git,dir` | Comma-separated columns to display |
+| `--theme <name>` | `gruvbox` | Color theme — see table below |
+| `--effort-icon <preset>` | `arrow` (`↯`) for iconic themes, none otherwise | Override the effort prefix icon. Presets: `arrow`, `bolt`, `flash`, `reason`, `dot`, `none`. A raw character is also accepted. |
 | `--install` | off | Write script to `~/.claude/scripts/statusline.sh` and update `settings.json` |
 
-### Elements
+### Columns
 
-| Element | Description | Data source |
-|---------|-------------|-------------|
-| `model` | Active model name (e.g. "Opus 4.6") | `model.display_name` |
-| `context` | Context window usage — progress bar + percentage | `context_window.remaining_percentage` |
-| `style` | Output style with prefix icon (hidden when "default") | `output_style.name` |
-| `git` | Git branch name (yellow when dirty) | `git` CLI |
-| `dir` | Current directory basename | `workspace.current_dir` |
-| `vim` | Vim mode indicator | `vim.mode` |
+| Column | Description | Data source |
+|--------|-------------|-------------|
+| `model` | Active model name (e.g. "Opus 4.7") | `model.display_name` |
+| `context` | Progress bar + percentage — **color changes with remaining capacity** | `context_window.remaining_percentage` |
+| `effort` | Reasoning effort level — **color changes with level** | `effortLevel` in `~/.claude/settings.local.json` → `~/.claude/settings.json` |
+| `git` | Git branch name (yellow when dirty) | `worktree.branch` → git CLI |
+| `dir` | Repo basename (original repo when in a worktree) | `worktree.original_repo_dir` → `workspace.current_dir` |
+| `worktree` | Bold `worktree:<id>` label (hidden outside a worktree) | `worktree.name` → parent-dir basename via git CLI |
+| `vim` | Vim mode indicator (hidden when inactive) | `vim.mode` |
+
+### Color-changing elements
+
+**`context`** — bar fill + percentage color scale with remaining capacity:
+
+| Remaining | Color | Meaning |
+|-----------|-------|---------|
+| > 50% | green | plenty of context |
+| 20–50% | yellow | watch out |
+| < 20% | red | nearly full — compact soon |
+
+**`effort`** — value + optional prefix icon color by level:
+
+| Level | Color |
+|-------|-------|
+| `max`, `xhigh`, `high` | **bold red** |
+| `medium` | yellow |
+| `low`, `xlow`, `minimal` | green |
+| other / unset | dim (or hidden when completely unset) |
 
 ### Themes
 
-| Theme | Style | Colors |
-|-------|-------|--------|
-| `gruvbox` | Warm retro | Teal model, aqua bar, yellow tokens, green dir, blue git |
-| `robbyrussell` | Classic oh-my-zsh | Cyan model, red dir, green git, magenta style |
-| `minimal` | Clean, no decoration | Default terminal colors, dim separators |
-| `dracula` | Dark modern | Purple model, green bar, pink style, cyan dir, orange git |
+| Theme | Vibe | Icons rendered in bar |
+|-------|------|------------------------|
+| `gruvbox` | Warm retro, muted | `✦` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `dracula` | Modern dark, high saturation | `◈` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `robbyrussell` | Classic oh-my-zsh | no prefix icons — colors + labels only |
+| `minimal` | Default terminal colors | no prefix icons — plain text |
 
-### Prefix Icons
+The `context` column intentionally skips a prefix icon — the colored progress bar is already visually rich. The `effort` prefix (`↯`) is baked into iconic themes and can be overridden with `--effort-icon`.
 
-| Icon | Name |
-|------|------|
-| `✦` | Claude sparkle (default) |
-| `➜` | Robbyrussell arrow |
-| `❯` | Pure/Starship prompt |
-| `⚡` | Lightning bolt |
-| `◉` | Filled circle |
+### Effort icons
+
+Pass `--effort-icon <preset>` to swap the glyph in front of the effort value. Presets:
+
+| Preset | Glyph | Notes |
+|--------|-------|-------|
+| `arrow` | `↯` | Electric arrow — **default**, narrow |
+| `bolt`  | `ϟ` | Greek koppa — narrow lightning |
+| `flash` | `⚡` | Classic lightning — wide in emoji-presentation fonts |
+| `reason`| `∴` | Therefore |
+| `dot`   | `◉` | Filled circle |
+| `none`  | (hidden) | Drop the icon entirely |
+
+You can also pass any raw character as `--effort-icon <char>`.
+
+**Worktree behavior**: When inside a git worktree (detected via the input JSON's `worktree.*` fields or via `git rev-parse --git-common-dir` fallback), the `worktree` column shows a bold `worktree:<id>` label using the parent dir name (e.g. `~/.codex/worktrees/46a6/clawmaster` → `worktree:46a6`). The `git` column prefers `worktree.branch` from the input JSON; the `dir` column prefers `worktree.original_repo_dir` so the repo identity stays stable across worktrees.
 
 ## Invocation
 
 This skill can be invoked with or without arguments:
 
-- **No args** (`/webup-statusline`): Interactive prompt via `AskUserQuestion` to pick elements, theme, and icon.
-- **With args** (`/webup-statusline dracula`): NLP parse for theme, elements, and icon preferences.
+- **No args** (`/webup-statusline`): Interactive prompt via `AskUserQuestion` to pick columns and theme.
+- **With args** (`/webup-statusline dracula`): NLP parse for theme and column preferences.
 
 ### Arg parsing (natural language)
 
 The args string is free-form text. Use NLP to extract:
 
-1. **theme** — match against: gruvbox, robbyrussell, minimal, dracula. Also recognize aliases (暗黑=dracula, 极简=minimal, 复古=gruvbox, レトロ=gruvbox).
-2. **elements** — look for mentions of: model, context/进度/コンテキスト, style/样式/スタイル, git/分支/ブランチ, dir/目录/ディレクトリ, vim.
-3. **icon** — match against the 5 prefix icons or descriptions like "dragon icon", "龙图标", "闪电".
+1. **theme** — match against: gruvbox, robbyrussell, minimal, dracula. Recognize aliases (暗黑=dracula, 极简=minimal, 复古=gruvbox, レトロ=gruvbox).
+2. **elements** — look for mentions of: model, context/进度/コンテキスト, effort/推理强度/努力度, git/分支/ブランチ, dir/目录/ディレクトリ, worktree/工作树/ワークツリー, vim.
 
-Unspecified fields use defaults: all elements except vim, gruvbox theme, ✦ icon.
+Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbox` theme.
 
 ## Workflow
 
-1. **If no args provided**: Use `AskUserQuestion` to ask 3 questions in a single prompt:
+1. **If no args provided**: Use `AskUserQuestion` to ask 2 questions in a single prompt:
 
-   **Q1 — Elements** (multiSelect): Which info to show in the status line?
+   **Q1 — Columns** (multiSelect): Which columns to display in the status line?
    - "Model name" — active Claude model
-   - "Context usage" — progress bar + percentage (Recommended)
-   - "Output style" — with prefix icon, hidden when default
+   - "Context usage" — progress bar + percentage, color by capacity (Recommended)
+   - "Effort level" — colored by level (Recommended)
    - "Git branch" — current branch, yellow when dirty (Recommended)
    - "Working directory" — folder name (Recommended)
+   - "Worktree" — bold `worktree:<id>` label (only shown when in a worktree)
    - "Vim mode" — vim keybinding mode indicator
 
    **Q2 — Theme** (single): Color theme?
-   - "Gruvbox Dark (Recommended)" — warm retro palette, 24-bit true color
-   - "Dracula" — modern dark theme, purple/pink/cyan
-   - "Robbyrussell" — classic oh-my-zsh style
+   - "Dracula" — modern dark, purple/pink/cyan (Recommended)
+   - "Gruvbox Dark" — warm retro palette, 24-bit true color
+   - "Robbyrussell" — classic oh-my-zsh style, no icons
    - "Minimal" — no decoration, dim separators only
 
-   **Q3 — Output style prefix icon** (single): Icon shown before output style name?
-   - "✦ sparkle (Recommended)" — Claude default
-   - "❯ prompt" — pure/starship style
-   - "➜ arrow" — robbyrussell style
-   - "◉ circle" — filled circle
-
-   **If args provided**: Parse theme, elements, and icon from args. Skip the prompt.
+   **If args provided**: Parse theme and columns from args. Skip the prompt.
 
 2. Map user selections to script flags:
-   - Elements → comma-separated list for `--elements`
+   - Columns → comma-separated list for `--elements`
    - Theme → `--theme` value
-   - Icon → `--icon` value
 
 3. Run the generator with `--install`:
    ```bash
-   npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements <list> --theme <theme> --icon "<icon>" --install
+   npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements <list> --theme <theme> --install
    ```
 
 4. Tell user to restart Claude Code to see the new status line.
 
 ## Output Examples
 
-**Gruvbox Dark** (model + context + style + dir + git):
+**Dracula** (all columns), remaining=49%, effort=high, inside a worktree:
 ```
-✦ Opus 4.6 | [■■■■■■■■■■□□□□□□□□□□] 49% | ✦thinking | ◆ my-project | ⎇ main
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 51% | ↯ high | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
+(bar yellow — 49% remaining; effort "high" bold red; context carries no prefix icon — the bar is already visual enough)
 
-**Minimal** (model + dir + git):
+**Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
 ```
-Claude Opus 4.6 · skills-cc · main
+✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
+(bar green — 88% remaining; effort "medium" yellow)
 
-**Dracula** (all elements):
+**Minimal** (model + effort + dir + git), effort=low:
 ```
-◈ Opus 4.6 | ↯ [■■■■■■■■■■□□□□□□□□□□] 49% | ⚡thinking | ⌨ normal | ◇ my-project | ⎇ main
+Claude Opus 4.7 · low · skills-cc · main
 ```
+(no prefix icons in minimal; effort "low" green)
 
 ## Notes
 
 - Generated script is saved to `~/.claude/scripts/statusline.sh`
-- Running the skill again overwrites the existing script (no backup needed — just re-run to change)
+- Running the skill again overwrites the existing script — just re-run to change theme or columns
 - The script uses `jq` to parse JSON input — make sure it's installed
 - Git dirty detection uses `--no-optional-locks` to avoid interfering with other git operations
