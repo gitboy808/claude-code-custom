@@ -27,12 +27,12 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 #### 效果预览
 
-完整字段，剩余 49%，`effortLevel: high`，输出样式 `Explanatory`，工作树内：
+完整字段，剩余 49%，累计消费 $0.42，`effortLevel: high`，输出样式 `Explanatory`，工作树内：
 
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula 主题 —— 黄色进度条（留意）、加粗红色 `↯ high`（压力）、紫色 `❋ Explanatory`（输出样式）、粉色 worktree 标签。*
+*Dracula 主题 —— 黄色进度条（留意）、金色 `$0.42`（会话消费）、加粗红色 `↯ high`（压力）、紫色 `❋ Explanatory`（输出样式）、粉色 worktree 标签。*
 
 轻松状态 —— 剩余 88%、`effortLevel: medium`，输出样式 default（隐藏）：
 ```
@@ -59,6 +59,7 @@ npx skills add webup/skills-cc -s webup-statusline -g
 |------|----------|----------|
 | `model` | 活跃模型名 | 始终显示 |
 | `context` | 上下文进度条 + 百分比 —— **颜色随剩余容量变化** | 始终显示 |
+| `cost` | 会话累计消费 `$X.XX`（金色，例如 `$0.42`） | 当 `cost.total_cost_usd` 四舍五入后 ≥ $0.01 |
 | `effort` | 推理努力度 —— **按强度着色**（支持 `low`/`medium`/`high`/`xhigh`/`max`） | 当 `~/.claude/settings.json` 中设置了 `effortLevel` |
 | `style` | 输出样式名（例如 `Explanatory`、`Learning`）—— 紫色呼应 Claude 品牌色 | 当 `output_style.name` 不是 `default` 时 |
 | `dir` | 仓库目录名（在工作树中显示原仓库名） | 始终显示 |

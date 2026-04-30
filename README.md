@@ -27,12 +27,12 @@ Generate and install a custom Claude Code status line. Pick your **columns**, pi
 
 #### What it looks like
 
-Full setup (all columns), 49% context remaining, `effortLevel: high`, output style `Explanatory`, inside a worktree:
+Full setup (all columns), 49% context remaining, session cost $0.42, `effortLevel: high`, output style `Explanatory`, inside a worktree:
 
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula theme — yellow bar (caution), bold-red `↯ high` (pressure), purple `❋ Explanatory` (output style), pink worktree label.*
+*Dracula theme — yellow bar (caution), gold `$0.42` (session spend), bold-red `↯ high` (pressure), purple `❋ Explanatory` (output style), pink worktree label.*
 
 Healthy session — 88% remaining, `effortLevel: medium`, default output style (hidden):
 ```
@@ -59,6 +59,7 @@ Healthy session — 88% remaining, `effortLevel: medium`, default output style (
 |--------|---------------|--------------|
 | `model` | Active model name | Always |
 | `context` | Context window progress bar + percentage — **color scales with remaining capacity** | Always |
+| `cost` | Session API spend as `$X.XX` in gold (e.g. `$0.42`) | When `cost.total_cost_usd` rounds to ≥ $0.01 |
 | `effort` | Reasoning effort level — **colored by intensity** (supports `low`/`medium`/`high`/`xhigh`/`max`) | When `effortLevel` is set in `~/.claude/settings.json` |
 | `style` | Output style name (e.g. `Explanatory`, `Learning`) — shown in purple to match Claude's brand hue | When `output_style.name` is anything other than `default` |
 | `dir` | Repo directory basename (original repo when inside a worktree) | Always |

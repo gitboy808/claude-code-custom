@@ -14,7 +14,7 @@ function getArg(name, def) {
 }
 const hasFlag = (name) => args.includes(`--${name}`)
 
-const elements = getArg('elements', 'model,context,effort,style,git,dir').split(',').map(s => s.trim())
+const elements = getArg('elements', 'model,context,cost,effort,style,git,dir').split(',').map(s => s.trim())
 const theme = getArg('theme', 'gruvbox')
 const effortIconFlag = getArg('effort-icon', '')  // optional override; see themes.effort icons
 const install = hasFlag('install')
@@ -35,6 +35,7 @@ const themes = {
     vim:       '\\033[38;2;214;93;14m',    // orange
     worktree:  '\\033[38;2;211;134;155m',  // soft pink
     style:     '\\033[38;2;177;98;134m',   // soft violet — output style
+    cost:      '\\033[38;2;215;153;33m',   // gruvbox gold — session spend
     effort_high: '\\033[1;38;2;251;73;52m',   // bold red
     effort_med:  '\\033[38;2;250;189;47m',    // yellow
     effort_low:  '\\033[38;2;142;192;124m',   // green
@@ -57,6 +58,7 @@ const themes = {
     vim:       '\\033[38;5;45m',   // cyan
     worktree:  '\\033[38;5;170m',  // magenta
     style:     '\\033[38;5;135m',  // violet
+    cost:      '\\033[38;5;172m',  // orange3 — session spend
     effort_high: '\\033[1;38;5;196m',  // bold red
     effort_med:  '\\033[38;5;220m',    // yellow
     effort_low:  '\\033[38;5;32m',     // green
@@ -79,6 +81,7 @@ const themes = {
     vim:       '\\033[0m',
     worktree:  '\\033[2m',
     style:     '\\033[0m',        // default — name speaks for itself
+    cost:      '\\033[33m',       // yellow
     effort_high: '\\033[1;31m',   // bold red
     effort_med:  '\\033[33m',     // yellow
     effort_low:  '\\033[32m',     // green
@@ -101,6 +104,7 @@ const themes = {
     vim:       '\\033[38;2;241;250;140m',  // yellow
     worktree:  '\\033[38;2;255;121;198m',  // pink
     style:     '\\033[38;2;189;147;249m',  // purple (matches Claude brand hue)
+    cost:      '\\033[38;2;255;215;0m',    // gold — session spend
     effort_high: '\\033[1;38;2;255;85;85m',    // bold red
     effort_med:  '\\033[38;2;241;250;140m',    // yellow
     effort_low:  '\\033[38;2;80;250;123m',     // green
@@ -119,10 +123,10 @@ if (!t) {
 
 // ── Element icons per theme ────────────────────────────────────────
 const elementIcons = {
-  gruvbox:      { model: '✦', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯', style: '❋' },
-  robbyrussell: { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: '',  style: ''  },
-  minimal:      { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: '',  style: ''  },
-  dracula:      { model: '◈', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯', style: '❋' },
+  gruvbox:      { model: '✦', context: '', cost: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯', style: '❋' },
+  robbyrussell: { model: '',  context: '', cost: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: '',  style: ''  },
+  minimal:      { model: '',  context: '', cost: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: '',  style: ''  },
+  dracula:      { model: '◈', context: '', cost: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯', style: '❋' },
 }
 
 // Effort icon presets — user can pick one via --effort-icon
@@ -169,6 +173,7 @@ function buildScript() {
   p(`readonly C_VIM='${t.vim}'`)
   p(`readonly C_WORKTREE='${t.worktree}'`)
   p(`readonly C_STYLE='${t.style}'`)
+  p(`readonly C_COST='${t.cost}'`)
   p(`readonly C_EFFORT_HIGH='${t.effort_high}'`)
   p(`readonly C_EFFORT_MED='${t.effort_med}'`)
   p(`readonly C_EFFORT_LOW='${t.effort_low}'`)
@@ -208,6 +213,10 @@ function buildScript() {
   }
   if (elements.includes('style')) {
     p("output_style=$(echo \"$input\" | jq -r '.output_style.name // empty')")
+  }
+  if (elements.includes('cost')) {
+    // total_cost_usd is a float; jq returns empty string when missing
+    p("cost_usd=$(echo \"$input\" | jq -r '.cost.total_cost_usd // empty')")
   }
   if (elements.includes('worktree') || elements.includes('git')) {
     p("worktree_name=$(echo \"$input\" | jq -r '.worktree.name // empty')")
@@ -318,6 +327,19 @@ function buildScript() {
     } else {
       p('  parts+=("${bar}")')
     }
+    p('fi')
+    p('')
+  }
+
+  if (elements.includes('cost')) {
+    const costi = icons.cost ? `${icons.cost} ` : ''
+    // Format with 2 decimals; hide when missing or when the rounded value
+    // would display as $0.00 (threshold 0.005 rounds up to $0.01)
+    p('if [ -n "$cost_usd" ]; then')
+    p('  cost_formatted=$(awk -v v="$cost_usd" \'BEGIN { if (v+0 >= 0.005) printf "$%.2f", v+0 }\')')
+    p('  if [ -n "$cost_formatted" ]; then')
+    p(`    parts+=("\${C_COST}${costi}\${cost_formatted}\${RST}")`)
+    p('  fi')
     p('fi')
     p('')
   }
