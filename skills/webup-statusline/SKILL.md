@@ -130,18 +130,14 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
 
 ## Workflow
 
-1. **If no args provided**: Use `AskUserQuestion` to ask 2 questions in a single prompt:
+1. **If no args provided**: Use `AskUserQuestion` to ask 2 questions in a single prompt. `AskUserQuestion` caps each question at 4 options, so **offer curated presets for columns** rather than an exhaustive toggle list. If the user picks "Other", interpret their free text as a comma-separated column list (or a natural-language description that maps to one).
 
-   **Q1 — Columns** (multiSelect): Which columns to display in the status line?
-   - "Model name" — active Claude model
-   - "Context usage" — progress bar + percentage, color by capacity (Recommended)
-   - "Cost" — session API spend as `$X.XX` (hidden when rounds to $0.00)
-   - "Effort level" — colored by level (Recommended)
-   - "Output style" — name of the active output style (hidden when "default")
-   - "Git branch" — current branch, yellow when dirty (Recommended)
-   - "Working directory" — folder name (Recommended)
-   - "Worktree" — bold `worktree:<id>` label (only shown when in a worktree)
-   - "Vim mode" — vim keybinding mode indicator
+   **Q1 — Column preset** (single): Which columns to display? Offer these 3 curated presets — `AskUserQuestion` will auto-append an "Other" option that lets the user type a free-text column list or description.
+   - "Everything (Recommended)" — `model,context,cost,effort,style,git,dir,worktree` (all columns that have a useful signal today; `vim` is excluded because most users don't use vim keybindings)
+   - "Default" — `model,context,effort,style,git,dir` (balanced — drops cost and worktree; matches the skill's default flag value)
+   - "Essentials" — `model,context,git,dir` (lean; no effort, no style, no cost)
+
+   If the user picks the auto-added "Other", treat their free text as a comma-separated column list, or as a natural-language description to map to columns. Fall back to `Default` if parsing is ambiguous.
 
    **Q2 — Theme** (single): Color theme?
    - "Dracula" — modern dark, purple/pink/cyan (Recommended)
@@ -152,8 +148,12 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
    **If args provided**: Parse theme and columns from args. Skip the prompt.
 
 2. Map user selections to script flags:
-   - Columns → comma-separated list for `--elements`
-   - Theme → `--theme` value
+   - Column preset → expand to the preset's canonical `--elements` list:
+     - `Everything` → `model,context,cost,effort,style,git,dir,worktree`
+     - `Default`    → `model,context,effort,style,git,dir`
+     - `Essentials` → `model,context,git,dir`
+     - `Other` (auto-added by `AskUserQuestion`) → parse the user's free text; keep only recognized column names (`model,context,cost,effort,style,dir,worktree,git,vim`). If parsing is ambiguous, fall back to `Default`.
+   - Theme → `--theme` value (one of `gruvbox`, `dracula`, `robbyrussell`, `minimal`)
 
 3. Run the generator with `--install`:
    ```bash
