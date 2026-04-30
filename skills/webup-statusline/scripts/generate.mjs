@@ -14,7 +14,7 @@ function getArg(name, def) {
 }
 const hasFlag = (name) => args.includes(`--${name}`)
 
-const elements = getArg('elements', 'model,context,effort,git,dir').split(',').map(s => s.trim())
+const elements = getArg('elements', 'model,context,effort,style,git,dir').split(',').map(s => s.trim())
 const theme = getArg('theme', 'gruvbox')
 const effortIconFlag = getArg('effort-icon', '')  // optional override; see themes.effort icons
 const install = hasFlag('install')
@@ -34,6 +34,7 @@ const themes = {
     git_dirty: '\\033[38;2;224;175;104m',  // warm yellow
     vim:       '\\033[38;2;214;93;14m',    // orange
     worktree:  '\\033[38;2;211;134;155m',  // soft pink
+    style:     '\\033[38;2;177;98;134m',   // soft violet — output style
     effort_high: '\\033[1;38;2;251;73;52m',   // bold red
     effort_med:  '\\033[38;2;250;189;47m',    // yellow
     effort_low:  '\\033[38;2;142;192;124m',   // green
@@ -55,6 +56,7 @@ const themes = {
     git_dirty: '\\033[38;5;220m',  // yellow
     vim:       '\\033[38;5;45m',   // cyan
     worktree:  '\\033[38;5;170m',  // magenta
+    style:     '\\033[38;5;135m',  // violet
     effort_high: '\\033[1;38;5;196m',  // bold red
     effort_med:  '\\033[38;5;220m',    // yellow
     effort_low:  '\\033[38;5;32m',     // green
@@ -76,6 +78,7 @@ const themes = {
     git_dirty: '\\033[33m',
     vim:       '\\033[0m',
     worktree:  '\\033[2m',
+    style:     '\\033[0m',        // default — name speaks for itself
     effort_high: '\\033[1;31m',   // bold red
     effort_med:  '\\033[33m',     // yellow
     effort_low:  '\\033[32m',     // green
@@ -97,6 +100,7 @@ const themes = {
     git_dirty: '\\033[38;2;241;250;140m',  // yellow (softer than red)
     vim:       '\\033[38;2;241;250;140m',  // yellow
     worktree:  '\\033[38;2;255;121;198m',  // pink
+    style:     '\\033[38;2;189;147;249m',  // purple (matches Claude brand hue)
     effort_high: '\\033[1;38;2;255;85;85m',    // bold red
     effort_med:  '\\033[38;2;241;250;140m',    // yellow
     effort_low:  '\\033[38;2;80;250;123m',     // green
@@ -115,10 +119,10 @@ if (!t) {
 
 // ── Element icons per theme ────────────────────────────────────────
 const elementIcons = {
-  gruvbox:      { model: '✦', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯' },
-  robbyrussell: { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: ''  },
-  minimal:      { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: ''  },
-  dracula:      { model: '◈', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯' },
+  gruvbox:      { model: '✦', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯', style: '❋' },
+  robbyrussell: { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: '',  style: ''  },
+  minimal:      { model: '',  context: '', dir: '',  git: '',  vim: '',  worktree: '',  effort: '',  style: ''  },
+  dracula:      { model: '◈', context: '', dir: '⌂', git: '⎇', vim: '⌨', worktree: '⊕', effort: '↯', style: '❋' },
 }
 
 // Effort icon presets — user can pick one via --effort-icon
@@ -164,6 +168,7 @@ function buildScript() {
   p(`readonly C_GIT_DIRTY='${t.git_dirty}'`)
   p(`readonly C_VIM='${t.vim}'`)
   p(`readonly C_WORKTREE='${t.worktree}'`)
+  p(`readonly C_STYLE='${t.style}'`)
   p(`readonly C_EFFORT_HIGH='${t.effort_high}'`)
   p(`readonly C_EFFORT_MED='${t.effort_med}'`)
   p(`readonly C_EFFORT_LOW='${t.effort_low}'`)
@@ -200,6 +205,9 @@ function buildScript() {
   }
   if (elements.includes('vim')) {
     p("vim_mode=$(echo \"$input\" | jq -r '.vim.mode // empty')")
+  }
+  if (elements.includes('style')) {
+    p("output_style=$(echo \"$input\" | jq -r '.output_style.name // empty')")
   }
   if (elements.includes('worktree') || elements.includes('git')) {
     p("worktree_name=$(echo \"$input\" | jq -r '.worktree.name // empty')")
@@ -326,6 +334,15 @@ function buildScript() {
     p('    *)                                             effort_color="$C_EFFORT_OFF" ;;')
     p('  esac')
     p(`  parts+=("\${effort_color}${ei}\${effort}\${RST}")`)
+    p('fi')
+    p('')
+  }
+
+  if (elements.includes('style')) {
+    const si = icons.style ? `${icons.style} ` : ''
+    // Hide when the value is "default" — no point surfacing the noise
+    p('if [ -n "$output_style" ] && [ "$output_style" != "default" ]; then')
+    p(`  parts+=("\${C_STYLE}${si}\${output_style}\${RST}")`)
     p('fi')
     p('')
   }

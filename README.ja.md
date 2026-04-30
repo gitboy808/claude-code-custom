@@ -27,18 +27,18 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 #### ルック＆フィール
 
-フルセット（全カラム）、残量 49%、`effortLevel: high`、ワークツリー内：
+フルセット（全カラム）、残量 49%、`effortLevel: high`、出力スタイル `Explanatory`、ワークツリー内：
 
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula テーマ — 黄色バー（注意）、太字赤 `↯ high`（圧迫）、ピンク worktree ラベル。*
+*Dracula テーマ — 黄色バー（注意）、太字赤 `↯ high`（圧迫）、パープル `❋ Explanatory`（出力スタイル）、ピンク worktree ラベル。*
 
-余裕ありセッション — 残量 88%、`effortLevel: medium`：
+余裕ありセッション — 残量 88%、`effortLevel: medium`、出力スタイル default（非表示）：
 ```
 ✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
-*Gruvbox Dark — 緑バー（余裕）、黄色 effort。*
+*Gruvbox Dark — 緑バー（余裕）、黄色 effort；出力スタイルは `default` のため非表示。*
 
 #### Claude Code での呼び出し方
 
@@ -60,6 +60,7 @@ npx skills add webup/skills-cc -s webup-statusline -g
 | `model` | アクティブモデル名 | 常時 |
 | `context` | コンテキスト進捗バー + % — **残量に応じて色が変化** | 常時 |
 | `effort` | 推論努力レベル — **強度で色分け**（`low`/`medium`/`high`/`xhigh`/`max` 対応） | `~/.claude/settings.json` で `effortLevel` が設定されている時 |
+| `style` | 出力スタイル名（例：`Explanatory`、`Learning`）— Claude のブランドカラーに合わせたパープル | `output_style.name` が `default` 以外の時 |
 | `dir` | リポジトリディレクトリ名（ワークツリー内では元リポジトリ名） | 常時 |
 | `worktree` | 太字の **`worktree:<id>`** ラベル | git ワークツリー内のみ（入力 JSON または `git` CLI で検出） |
 | `git` | Git ブランチ名（作業ツリーが汚れていると黄色） | git リポジトリ内のみ |
@@ -81,8 +82,8 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 | テーマ | 雰囲気 | バーに実際に描画される前置アイコン |
 |--------|--------|------------------------------------|
-| `gruvbox` | レトロ暖色、落ち着いた配色 | `✦` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
-| `dracula` | モダンダーク、彩度高め | `◈` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `gruvbox` | レトロ暖色、落ち着いた配色 | `✦` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `dracula` | モダンダーク、彩度高め | `◈` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
 | `robbyrussell` | クラシック oh-my-zsh | 前置アイコンなし — 色とラベルのみ |
 | `minimal` | 端末デフォルト色 | 前置アイコンなし — プレーンテキスト |
 

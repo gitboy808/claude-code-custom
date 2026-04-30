@@ -27,18 +27,18 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 #### 效果预览
 
-完整字段，剩余 49%，`effortLevel: high`，工作树内：
+完整字段，剩余 49%，`effortLevel: high`，输出样式 `Explanatory`，工作树内：
 
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula 主题 —— 黄色进度条（留意）、加粗红色 `↯ high`（压力）、粉色 worktree 标签。*
+*Dracula 主题 —— 黄色进度条（留意）、加粗红色 `↯ high`（压力）、紫色 `❋ Explanatory`（输出样式）、粉色 worktree 标签。*
 
-轻松状态 —— 剩余 88%、`effortLevel: medium`：
+轻松状态 —— 剩余 88%、`effortLevel: medium`，输出样式 default（隐藏）：
 ```
 ✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
-*Gruvbox Dark —— 绿色进度条（轻松）、黄色 effort。*
+*Gruvbox Dark —— 绿色进度条（轻松）、黄色 effort；输出样式字段隐藏，因为值是 `default`。*
 
 #### 在 Claude Code 中调用
 
@@ -60,6 +60,7 @@ npx skills add webup/skills-cc -s webup-statusline -g
 | `model` | 活跃模型名 | 始终显示 |
 | `context` | 上下文进度条 + 百分比 —— **颜色随剩余容量变化** | 始终显示 |
 | `effort` | 推理努力度 —— **按强度着色**（支持 `low`/`medium`/`high`/`xhigh`/`max`） | 当 `~/.claude/settings.json` 中设置了 `effortLevel` |
+| `style` | 输出样式名（例如 `Explanatory`、`Learning`）—— 紫色呼应 Claude 品牌色 | 当 `output_style.name` 不是 `default` 时 |
 | `dir` | 仓库目录名（在工作树中显示原仓库名） | 始终显示 |
 | `worktree` | 加粗的 **`worktree:<id>`** 标签 | 仅在 git 工作树中（通过输入 JSON 或 `git` CLI 检测） |
 | `git` | Git 分支名（工作目录脏时变黄） | 仅在 git 仓库中 |
@@ -81,8 +82,8 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 | 主题 | 风格 | 实际渲染的前缀图标 |
 |------|------|--------------------|
-| `gruvbox` | 暖色复古，柔和 | `✦` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
-| `dracula` | 现代暗色，饱和度高 | `◈` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `gruvbox` | 暖色复古，柔和 | `✦` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `dracula` | 现代暗色，饱和度高 | `◈` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
 | `robbyrussell` | 经典 oh-my-zsh | 无前缀图标 —— 仅靠颜色和文本 |
 | `minimal` | 终端默认色 | 无前缀图标 —— 纯文本 |
 

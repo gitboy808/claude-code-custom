@@ -46,7 +46,7 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--elements <list>` | `model,context,effort,git,dir` | Comma-separated columns to display |
+| `--elements <list>` | `model,context,effort,style,git,dir` | Comma-separated columns to display |
 | `--theme <name>` | `gruvbox` | Color theme — see table below |
 | `--effort-icon <preset>` | `arrow` (`↯`) for iconic themes, none otherwise | Override the effort prefix icon. Presets: `arrow`, `bolt`, `flash`, `reason`, `dot`, `none`. A raw character is also accepted. |
 | `--install` | off | Write script to `~/.claude/scripts/statusline.sh` and update `settings.json` |
@@ -58,6 +58,7 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git
 | `model` | Active model name (e.g. "Opus 4.7") | `model.display_name` |
 | `context` | Progress bar + percentage — **color changes with remaining capacity** | `context_window.remaining_percentage` |
 | `effort` | Reasoning effort level — **color changes with level** | `effortLevel` in `~/.claude/settings.local.json` → `~/.claude/settings.json` |
+| `style` | Output style name (e.g. Explanatory, Learning) — hidden when "default" | `output_style.name` from input JSON |
 | `git` | Git branch name (yellow when dirty) | `worktree.branch` → git CLI |
 | `dir` | Repo basename (original repo when in a worktree) | `worktree.original_repo_dir` → `workspace.current_dir` |
 | `worktree` | Bold `worktree:<id>` label (hidden outside a worktree) | `worktree.name` → parent-dir basename via git CLI |
@@ -86,8 +87,8 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git
 
 | Theme | Vibe | Icons rendered in bar |
 |-------|------|------------------------|
-| `gruvbox` | Warm retro, muted | `✦` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
-| `dracula` | Modern dark, high saturation | `◈` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `gruvbox` | Warm retro, muted | `✦` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `dracula` | Modern dark, high saturation | `◈` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
 | `robbyrussell` | Classic oh-my-zsh | no prefix icons — colors + labels only |
 | `minimal` | Default terminal colors | no prefix icons — plain text |
 
@@ -134,6 +135,7 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
    - "Model name" — active Claude model
    - "Context usage" — progress bar + percentage, color by capacity (Recommended)
    - "Effort level" — colored by level (Recommended)
+   - "Output style" — name of the active output style (hidden when "default")
    - "Git branch" — current branch, yellow when dirty (Recommended)
    - "Working directory" — folder name (Recommended)
    - "Worktree" — bold `worktree:<id>` label (only shown when in a worktree)
@@ -160,11 +162,11 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
 
 ## Output Examples
 
-**Dracula** (all columns), remaining=49%, effort=high, inside a worktree:
+**Dracula** (all columns), remaining=49%, effort=high, output style=Explanatory, inside a worktree:
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 51% | ↯ high | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 51% | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-(bar yellow — 49% remaining; effort "high" bold red; context carries no prefix icon — the bar is already visual enough)
+(bar yellow — 49% remaining; effort "high" bold red; purple `❋ Explanatory` sits between effort and dir; context carries no prefix icon — the bar is already visual enough)
 
 **Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
 ```

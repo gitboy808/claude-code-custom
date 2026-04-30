@@ -27,18 +27,18 @@ Generate and install a custom Claude Code status line. Pick your **columns**, pi
 
 #### What it looks like
 
-Full setup (all columns), 49% context remaining, `effortLevel: high`, inside a worktree:
+Full setup (all columns), 49% context remaining, `effortLevel: high`, output style `Explanatory`, inside a worktree:
 
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula theme — yellow bar (caution), bold-red `↯ high` (pressure), pink worktree label.*
+*Dracula theme — yellow bar (caution), bold-red `↯ high` (pressure), purple `❋ Explanatory` (output style), pink worktree label.*
 
-Healthy session — 88% remaining, `effortLevel: medium`:
+Healthy session — 88% remaining, `effortLevel: medium`, default output style (hidden):
 ```
 ✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
-*Gruvbox Dark — green bar (relaxed), yellow effort.*
+*Gruvbox Dark — green bar (relaxed), yellow effort; output-style column hidden because it's `default`.*
 
 #### Invoke in Claude Code
 
@@ -60,6 +60,7 @@ Healthy session — 88% remaining, `effortLevel: medium`:
 | `model` | Active model name | Always |
 | `context` | Context window progress bar + percentage — **color scales with remaining capacity** | Always |
 | `effort` | Reasoning effort level — **colored by intensity** (supports `low`/`medium`/`high`/`xhigh`/`max`) | When `effortLevel` is set in `~/.claude/settings.json` |
+| `style` | Output style name (e.g. `Explanatory`, `Learning`) — shown in purple to match Claude's brand hue | When `output_style.name` is anything other than `default` |
 | `dir` | Repo directory basename (original repo when inside a worktree) | Always |
 | `worktree` | Bold **`worktree:<id>`** label | Only inside a git worktree (detected via input JSON or `git` CLI) |
 | `git` | Git branch name (yellow when dirty) | Only in a git repo |
@@ -81,8 +82,8 @@ Each theme maps its own green/yellow/red shades from its palette, so the policy 
 
 | Theme | Vibe | Icons rendered in the bar |
 |-------|------|----------------------------|
-| `gruvbox` | Warm retro, muted | `✦` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
-| `dracula` | Modern dark, high saturation | `◈` model · `↯` effort · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `gruvbox` | Warm retro, muted | `✦` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
+| `dracula` | Modern dark, high saturation | `◈` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
 | `robbyrussell` | Classic oh-my-zsh | no prefix icons — color + labels only |
 | `minimal` | Terminal defaults | no prefix icons — plain text |
 
