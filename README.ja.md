@@ -29,16 +29,31 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 フルセット（全カラム）、残量 49%、セッションコスト $0.42、`effortLevel: high`、出力スタイル `Explanatory`、ワークツリー内：
 
+<img src="./docs/examples/dracula-full.svg" alt="Dracula テーマ全カラムの例" />
+
+*Dracula テーマ — 黄色バー（注意）、ゴールド `$0.42`（セッション支出）、太字赤 `↯ high`（圧迫）、パープル `❋ Explanatory`（出力スタイル）、ピンク worktree ラベル。*
+
+<details><summary>プレーンテキスト</summary>
+
 ```
 ◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula テーマ — 黄色バー（注意）、ゴールド `$0.42`（セッション支出）、太字赤 `↯ high`（圧迫）、パープル `❋ Explanatory`（出力スタイル）、ピンク worktree ラベル。*
+
+</details>
 
 余裕ありセッション — 残量 88%、`effortLevel: medium`、出力スタイル default（非表示）：
+
+<img src="./docs/examples/gruvbox-healthy.svg" alt="Gruvbox テーマ余裕セッションの例" />
+
+*Gruvbox Dark — 緑バー（余裕）、黄色 effort；出力スタイルは `default` のため非表示。*
+
+<details><summary>プレーンテキスト</summary>
+
 ```
 ✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
-*Gruvbox Dark — 緑バー（余裕）、黄色 effort；出力スタイルは `default` のため非表示。*
+
+</details>
 
 #### Claude Code での呼び出し方
 

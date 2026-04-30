@@ -29,16 +29,31 @@ Generate and install a custom Claude Code status line. Pick your **columns**, pi
 
 Full setup (all columns), 49% context remaining, session cost $0.42, `effortLevel: high`, output style `Explanatory`, inside a worktree:
 
+<img src="./docs/examples/dracula-full.svg" alt="Dracula theme with all columns: purple model, yellow context bar, gold cost, bold-red effort, purple output style, cyan dir, pink worktree, orange git branch" />
+
+*Dracula theme — yellow bar (caution), gold `$0.42` (session spend), bold-red `↯ high` (pressure), purple `❋ Explanatory` (output style), pink worktree label.*
+
+<details><summary>Plain text</summary>
+
 ```
 ◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula theme — yellow bar (caution), gold `$0.42` (session spend), bold-red `↯ high` (pressure), purple `❋ Explanatory` (output style), pink worktree label.*
+
+</details>
 
 Healthy session — 88% remaining, `effortLevel: medium`, default output style (hidden):
+
+<img src="./docs/examples/gruvbox-healthy.svg" alt="Gruvbox theme healthy session: teal model, green context bar at 12% used, yellow effort medium, green dir, blue git main" />
+
+*Gruvbox Dark — green bar (relaxed), yellow effort; output-style column hidden because it's `default`.*
+
+<details><summary>Plain text</summary>
+
 ```
 ✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
-*Gruvbox Dark — green bar (relaxed), yellow effort; output-style column hidden because it's `default`.*
+
+</details>
 
 #### Invoke in Claude Code
 

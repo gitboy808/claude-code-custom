@@ -29,16 +29,31 @@ npx skills add webup/skills-cc -s webup-statusline -g
 
 完整字段，剩余 49%，累计消费 $0.42，`effortLevel: high`，输出样式 `Explanatory`，工作树内：
 
+<img src="./docs/examples/dracula-full.svg" alt="Dracula 主题全字段示例" />
+
+*Dracula 主题 —— 黄色进度条（留意）、金色 `$0.42`（会话消费）、加粗红色 `↯ high`（压力）、紫色 `❋ Explanatory`（输出样式）、粉色 worktree 标签。*
+
+<details><summary>纯文本</summary>
+
 ```
 ◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
-*Dracula 主题 —— 黄色进度条（留意）、金色 `$0.42`（会话消费）、加粗红色 `↯ high`（压力）、紫色 `❋ Explanatory`（输出样式）、粉色 worktree 标签。*
+
+</details>
 
 轻松状态 —— 剩余 88%、`effortLevel: medium`，输出样式 default（隐藏）：
+
+<img src="./docs/examples/gruvbox-healthy.svg" alt="Gruvbox 主题轻松状态" />
+
+*Gruvbox Dark —— 绿色进度条（轻松）、黄色 effort；输出样式字段隐藏，因为值是 `default`。*
+
+<details><summary>纯文本</summary>
+
 ```
 ✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
 ```
-*Gruvbox Dark —— 绿色进度条（轻松）、黄色 effort；输出样式字段隐藏，因为值是 `default`。*
+
+</details>
 
 #### 在 Claude Code 中调用
 
