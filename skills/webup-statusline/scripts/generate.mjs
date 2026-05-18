@@ -211,6 +211,8 @@ function buildScript() {
   }
   if (elements.includes('context')) {
     p("remaining=$(echo \"$input\" | jq -r '.context_window.remaining_percentage // \"\"')")
+    p("ctx_used_tokens=$(echo \"$input\" | jq -r '.context_window.total_input_tokens // empty')")
+    p("ctx_window_size=$(echo \"$input\" | jq -r '.context_window.context_window_size // empty')")
   }
   if (elements.includes('effort')) {
     p('# Read effort level from settings (local overrides global)')
@@ -321,6 +323,12 @@ function buildScript() {
     p(`  for ((i=0; i<filled; i++)); do bar+="\${ctx_color}${t.bar_chars[0]}\${RST}"; done`)
     p(`  for ((i=0; i<empty; i++)); do bar+="\${C_BAR_EMPTY}${t.bar_chars[1]}\${RST}"; done`)
     p(`  bar+="\${C_SEP}]\${RST} \${ctx_color}\${used}%\${RST}"`)
+    p('  # Append token counts when available: used_tokens/window_size')
+    p('  if [ -n "$ctx_used_tokens" ] && [ -n "$ctx_window_size" ]; then')
+    p('    ctx_used_k=$(awk -v v="$ctx_used_tokens" \'BEGIN { printf "%.0fk", v/1000 }\')')
+    p('    ctx_total_k=$(awk -v v="$ctx_window_size" \'BEGIN { printf "%.0fk", v/1000 }\')')
+    p(`    bar+="\${C_SEP} (\${RST}\${ctx_color}\${ctx_used_k}\${RST}\${C_SEP}/\${RST}\${ctx_color}\${ctx_total_k}\${RST}\${C_SEP})\${RST}"`)
+    p('  fi')
     p('fi')
     p('')
   }
