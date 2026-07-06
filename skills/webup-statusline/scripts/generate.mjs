@@ -174,6 +174,11 @@ function buildScript() {
     '      break',
     '    fi',
     '  done',
+    '  if ! command -v jq >/dev/null 2>&1; then',
+    '    echo "claude-status: jq is required but not installed." >&2',
+    '    echo "  Install via: winget install jqlang.jq  OR  scoop install jq" >&2',
+    '    exit 1',
+    '  fi',
     'fi',
   ]
   for (const line of jqPathBlock) p(line)
