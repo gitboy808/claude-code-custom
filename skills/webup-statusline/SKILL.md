@@ -1,6 +1,6 @@
 ---
 name: webup-statusline
-description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", "ステータスライン", or similar.
+description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", or similar.
 ---
 
 # Status Line Generator
@@ -123,8 +123,8 @@ This skill can be invoked with or without arguments:
 
 The args string is free-form text. Use NLP to extract:
 
-1. **theme** — match against: gruvbox, robbyrussell, minimal, dracula. Recognize aliases (暗黑=dracula, 极简=minimal, 复古=gruvbox, レトロ=gruvbox).
-2. **elements** — look for mentions of: model, context/进度/コンテキスト, effort/推理强度/努力度, git/分支/ブランチ, dir/目录/ディレクトリ, worktree/工作树/ワークツリー, vim.
+1. **theme** — match against: gruvbox, robbyrussell, minimal, dracula. Recognize aliases (暗黑=dracula, 极简=minimal, 复古=gruvbox).
+2. **elements** — look for mentions of: model, context/进度, effort/推理强度, git/分支, dir/目录, worktree/工作树, vim.
 
 Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbox` theme.
 

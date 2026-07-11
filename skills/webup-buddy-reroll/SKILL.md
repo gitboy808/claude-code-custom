@@ -1,6 +1,6 @@
 ---
 name: webup-buddy-reroll
-description: Reroll Claude Code /buddy companion to a target species and rarity, or rename/customize companion name and personality. Triggers on "reroll buddy", "change buddy", "legendary buddy", "new companion", "buddy hack", "rename buddy", "buddy name", "buddy personality", "换宠物", "重新抽", "传说宠物", "改名", "宠物名字", "バディ変更", "伝説バディ", "バディ名前", or similar.
+description: Reroll Claude Code /buddy companion to a target species and rarity, or rename/customize companion name and personality. Triggers on "reroll buddy", "change buddy", "legendary buddy", "new companion", "buddy hack", "rename buddy", "buddy name", "buddy personality", "换宠物", "重新抽", "传说宠物", "改名", "宠物名字", or similar.
 ---
 
 # Buddy Reroll
@@ -88,7 +88,7 @@ This skill can be invoked with or without arguments:
 
 The args string is free-form text. Use NLP to extract these fields:
 
-1. **species** — match against the 18 known species names (duck, goose, blob, cat, dragon, octopus, owl, penguin, turtle, snail, ghost, axolotl, capybara, cactus, robot, rabbit, mushroom, chonk). Also recognize Chinese/Japanese equivalents (龙=dragon, 猫=cat, etc.).
+1. **species** — match against the 18 known species names (duck, goose, blob, cat, dragon, octopus, owl, penguin, turtle, snail, ghost, axolotl, capybara, cactus, robot, rabbit, mushroom, chonk). Also recognize Chinese equivalents (龙=dragon, 猫=cat, etc.).
 2. **rarity** — match against the 5 tiers (common, uncommon, rare, epic, legendary) or equivalents (传说=legendary, 史诗=epic, etc.).
 3. **name** — a short proper name for the companion (e.g. "沧海九粟", "Nimbus", "小火"). Look for patterns like "叫X", "名字X", "named X", "name X", or a standalone proper noun that isn't a species/rarity keyword.
 4. **personality** — a description of the companion's vibe or character (e.g. "爱打盹的小龙", "sarcastic robot"). Look for patterns like "个性X", "性格X", "personality X", or descriptive phrases that aren't species/rarity/name.
