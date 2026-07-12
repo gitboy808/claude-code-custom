@@ -36,7 +36,7 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 <details><summary>纯文本</summary>
 
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■□□□□□] 49% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
 
 </details>
@@ -50,7 +50,7 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 <details><summary>纯文本</summary>
 
 ```
-✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
+✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
 ```
 
 </details>

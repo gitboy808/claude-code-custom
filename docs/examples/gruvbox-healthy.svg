@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 32" width="680" height="32" font-family="SFMono-Regular, Menlo, Monaco, Consolas, 'DejaVu Sans Mono', monospace" font-size="14">
   <rect width="100%" height="100%" fill="#282828"/>
-  <text x="10" y="21" xml:space="preserve"><tspan fill="#56b6c2">✦ Opus 4.7</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#665c54">[</tspan><tspan fill="#8ec07c">■■</tspan><tspan fill="#504945">□□□□□□□□□□□□□□□□□□</tspan><tspan fill="#665c54">]</tspan><tspan fill="#8ec07c"> 12%</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#fabd2f">↯ medium</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#98c379">⌂ claude-code</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#8fafd1">⎇ main</tspan></text>
+  <text x="10" y="21" xml:space="preserve"><tspan fill="#56b6c2">✦ Opus 4.7</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#665c54">[</tspan><tspan fill="#8ec07c">■</tspan><tspan fill="#504945">□□□□□□□□□</tspan><tspan fill="#665c54">]</tspan><tspan fill="#8ec07c"> 12%</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#fabd2f">↯ medium</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#98c379">⌂ claude-code</tspan><tspan fill="#665c54"> | </tspan><tspan fill="#8fafd1">⎇ main</tspan></text>
 </svg>

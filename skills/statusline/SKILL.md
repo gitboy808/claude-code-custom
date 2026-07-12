@@ -166,13 +166,13 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
 
 **Dracula** (all columns), remaining=49%, cost=$0.42, effort=high, output style=Explanatory, inside a worktree:
 ```
-◈ Opus 4.7 | [■■■■■■■■■■□□□□□□□□□□] 51% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.7 | [■■■■■□□□□□] 51% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
 (bar yellow — 49% remaining; `$0.42` gold session spend next to the bar; effort "high" bold red; purple `❋ Explanatory` sits between effort and dir; context carries no prefix icon — the bar is already visual enough)
 
 **Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
 ```
-✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
+✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
 ```
 (bar green — 88% remaining; effort "medium" yellow)
 
