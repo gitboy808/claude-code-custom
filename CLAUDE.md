@@ -9,7 +9,6 @@ claude-code — Claude Code marketplace plugin providing utility skills for cust
 ```
 skills/
 └── [custom]                  # Claude Code customization skills (plugin name: custom)
-    └── buddy-reroll/         # Reroll /buddy companion to target species+rarity
 ```
 
 Each skill contains:

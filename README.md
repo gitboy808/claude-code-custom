@@ -160,44 +160,6 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 > 💡 **还原默认:** 运行 `/custom:settings-config restore-default` —— 备份当前 `settings.json` 到 `~/.claude/backups/settings-<timestamp>.json`,删除 `language` / `effortLevel` / `permissions.defaultMode` / `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` 四个字段,**其它字段(env 其它键、plugins、hooks、statusLine 等)全部原样保留**。已处于默认状态时直接退出 0,不创建空备份。
 
-### 🎰 /custom:buddy-reroll
-
-重新抽取 `/buddy` 宠物伙伴,指定物种和稀有度 —— 包括 ✨ 传说级。还能给宠物改名、自定义个性描述。
-
-Claude Code 的宠物系统是确定性的:`hash(userID + SALT)` 始终生成同一只宠物。本技能通过暴力搜索,找到一个能映射到目标组合的 userID。
-
-> **API 用户**:直接可用。**Pro/Max 订阅用户**:技能会自动检测 `accountUuid` 并引导你完成 OAuth 设置以绕过锁定 —— 无需手动操作。
-
-**在 Claude Code 中调用:**
-
-```
-# 交互式 — 选择物种、稀有度、名字、个性
-/custom:buddy-reroll
-
-# 仅 reroll
-/custom:buddy-reroll dragon legendary
-
-# reroll + 改名一步到位
-/custom:buddy-reroll dragon legendary 沧海九粟 爱打盹的小龙
-
-# 仅改名/改个性(自然语言)
-/custom:buddy-reroll 改名叫沧海九粟,个性是爱打盹的小龙
-```
-
-**🐾 18 个物种:**
-
-| | | | | | |
-|---|---|---|---|---|---|
-| 🦆 duck 鸭子 | 🪿 goose 鹅 | 🫧 blob 果冻 | 🐱 cat 猫 | 🐉 dragon 龙 | 🐙 octopus 章鱼 |
-| 🦉 owl 猫头鹰 | 🐧 penguin 企鹅 | 🐢 turtle 乌龟 | 🐌 snail 蜗牛 | 👻 ghost 幽灵 | 🦎 axolotl 六角恐龙 |
-| 🦫 capybara 水豚 | 🌵 cactus 仙人掌 | 🤖 robot 机器人 | 🐰 rabbit 兔子 | 🍄 mushroom 蘑菇 | 🐷 chonk 胖墩 |
-
-**💎 5 个稀有度:** ★ common 普通 (60%) · ★★ uncommon 稀有 (25%) · ★★★ rare 精良 (10%) · ★★★★ epic 史诗 (4%) · ★★★★★ legendary 传说 (1%)
-
-重新抽取后,重启 Claude Code 并执行 `/buddy` 即可领取新宠物!🎉
-
-> ⚠️ **注意:** 需要 Bun 运行时(`Bun.hash()` 与 Claude Code 内部哈希一致)。Node.js 会产生错误结果。
-
 ## 📄 许可证
 
 MIT
