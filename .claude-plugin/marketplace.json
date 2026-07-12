@@ -1,7 +1,7 @@
 {
-  "name": "webup-skills-cc",
+  "name": "gitboy808-claude-code",
   "owner": {
-    "name": "haili"
+    "name": "gitboy808"
   },
   "metadata": {
     "description": "Claude Code utility skills for customization and hacks",
@@ -9,13 +9,13 @@
   },
   "plugins": [
     {
-      "name": "cc-hacks",
+      "name": "custom",
       "description": "Claude Code customization and hack skills",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/webup-buddy-reroll",
-        "./skills/webup-statusline"
+        "./skills/statusline",
+        "./skills/buddy-reroll"
       ]
     }
   ]

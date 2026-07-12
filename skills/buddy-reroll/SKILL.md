@@ -1,5 +1,5 @@
 ---
-name: webup-buddy-reroll
+name: buddy-reroll
 description: Reroll Claude Code /buddy companion to a target species and rarity, or rename/customize companion name and personality. Triggers on "reroll buddy", "change buddy", "legendary buddy", "new companion", "buddy hack", "rename buddy", "buddy name", "buddy personality", "换宠物", "重新抽", "传说宠物", "改名", "宠物名字", or similar.
 ---
 
@@ -79,10 +79,10 @@ npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species dragon --rarity legendary -
 
 This skill can be invoked with or without arguments:
 
-- **No args** (`/webup-buddy-reroll`): Prompts the user interactively via `AskUserQuestion` before running.
-- **Reroll only** (`/webup-buddy-reroll dragon legendary`): Skips the prompt and locks to the given species and rarity.
-- **Reroll + rename** (`/webup-buddy-reroll dragon legendary 沧海九粟 爱打盹的小龙`): Reroll, then immediately apply the given name and personality.
-- **Rename only** (`/webup-buddy-reroll 改名叫沧海九粟，个性是爱打盹的小龙`): Skip reroll, only change name and/or personality.
+- **No args** (`/custom:buddy-reroll`): Prompts the user interactively via `AskUserQuestion` before running.
+- **Reroll only** (`/custom:buddy-reroll dragon legendary`): Skips the prompt and locks to the given species and rarity.
+- **Reroll + rename** (`/custom:buddy-reroll dragon legendary 沧海九粟 爱打盹的小龙`): Reroll, then immediately apply the given name and personality.
+- **Rename only** (`/custom:buddy-reroll 改名叫沧海九粟，个性是爱打盹的小龙`): Skip reroll, only change name and/or personality.
 
 ### Arg parsing (natural language)
 

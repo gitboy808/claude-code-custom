@@ -1,5 +1,5 @@
 ---
-name: webup-statusline
+name: statusline
 description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", or similar.
 ---
 
@@ -116,8 +116,8 @@ You can also pass any raw character as `--effort-icon <char>`.
 
 This skill can be invoked with or without arguments:
 
-- **No args** (`/webup-statusline`): Interactive prompt via `AskUserQuestion` to pick columns and theme.
-- **With args** (`/webup-statusline dracula`): NLP parse for theme and column preferences.
+- **No args** (`/custom:statusline`): Interactive prompt via `AskUserQuestion` to pick columns and theme.
+- **With args** (`/custom:statusline dracula`): NLP parse for theme and column preferences.
 
 ### Arg parsing (natural language)
 
@@ -172,13 +172,13 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
 
 **Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
 ```
-✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ skills-cc | ⎇ main
+✦ Opus 4.7 | [■■□□□□□□□□□□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
 ```
 (bar green — 88% remaining; effort "medium" yellow)
 
 **Minimal** (model + effort + dir + git), effort=low:
 ```
-Claude Opus 4.7 · low · skills-cc · main
+Claude Opus 4.7 · low · claude-code · main
 ```
 (no prefix icons in minimal; effort "low" green)
 
