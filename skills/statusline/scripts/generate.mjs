@@ -213,7 +213,7 @@ function buildScript() {
 
   // Extract fields based on selected elements
   if (elements.includes('model')) {
-    p("model=$(echo \"$input\" | jq -r '.model.display_name // \"\"')")
+    p("model=$(echo \"$input\" | jq -r '.model.display_name // \"\"' | sed -E 's/ context//g; s/ *\\([^)]*\\)//g')")
   }
   if (elements.includes('context')) {
     p("remaining=$(echo \"$input\" | jq -r '.context_window.remaining_percentage // \"\"')")

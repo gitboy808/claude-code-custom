@@ -59,7 +59,7 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
 
 | Column | Description | Data source |
 |--------|-------------|-------------|
-| `model` | Active model name (e.g. "Opus 4.7") | `model.display_name` |
+| `model` | Active model name (e.g. "Opus 4.8") | `model.display_name` |
 | `context` | Progress bar + percentage — **color changes with remaining capacity** | `context_window.remaining_percentage` |
 | `cost` | Session API spend formatted as `$X.XX` in gold — hidden when rounds to `$0.00` | `cost.total_cost_usd` from input JSON |
 | `effort` | Reasoning effort level — **color changes with level** | `effortLevel` in `~/.claude/settings.local.json` → `~/.claude/settings.json` |
@@ -170,19 +170,19 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
 
 **Dracula** (all columns), remaining=49%, cost=$0.42, effort=high, output style=Explanatory, inside a worktree:
 ```
-◈ Opus 4.7 | [■■■■■□□□□□] 51% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
+◈ Opus 4.8 | [■■■■■□□□□□] 51% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
 ```
 (bar yellow — 49% remaining; `$0.42` gold session spend next to the bar; effort "high" bold red; purple `❋ Explanatory` sits between effort and dir; context carries no prefix icon — the bar is already visual enough)
 
 **Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
 ```
-✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code-custom | ⎇ main
+✦ Opus 4.8 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code-custom | ⎇ main
 ```
 (bar green — 88% remaining; effort "medium" yellow)
 
 **Minimal** (model + effort + dir + git), effort=low:
 ```
-Claude Opus 4.7 · low · claude-code · main
+Claude Opus 4.8 · low · claude-code · main
 ```
 (no prefix icons in minimal; effort "low" green)
 
