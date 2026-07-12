@@ -19,6 +19,19 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 > 💡 安装时 Claude Code 会询问作用域:user(全局)/ project(随仓库共享)/ local(本仓库私有)。由 `claude plugin install --scope {user|project|local}` 或 `/plugin` UI 交互式选择。
 
+## 🔄 同步本地修改到已安装插件
+
+改了本仓库里的 `SKILL.md` / 脚本后,**已经安装的插件不会自动更新** —— 因为 Claude Code 用的是 **plugin cache**(按 git commit hash 打包的快照),路径是 `~/.claude/plugins/cache/<marketplace>/<plugin>/<commit>/`。working tree 和 cache 是两个独立目录,改 working tree 不会影响 cache。
+
+要让本地修改立即生效,选其一:
+
+| 场景 | 操作 |
+|------|------|
+| 调试中、想立刻验证 | `cp skills/<skill>/SKILL.md ~/.claude/plugins/marketplaces/gitboy808-claude-code-custom/skills/<skill>/SKILL.md` 然后 `rm -rf ~/.claude/plugins/cache/gitboy808-claude-code-custom`(下次启动自动重打包) |
+| 正式发布 | `git add . && git commit && git push` → marketplace 自动 `git pull` → 重新 `/plugin install` / `/reload-plugins` 让 cache 重建 |
+
+> 💡 验证插件加载到的是哪一份:`md5 ~/.claude/plugins/marketplaces/gitboy808-claude-code-custom/skills/<skill>/SKILL.md ~/.claude/plugins/cache/gitboy808-claude-code-custom/custom/*/skills/<skill>/SKILL.md`。两者不一致 → cache 滞后。
+
 ## 🎮 技能列表
 
 ### 📊 /custom:statusline

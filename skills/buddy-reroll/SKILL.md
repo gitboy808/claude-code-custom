@@ -79,7 +79,7 @@ npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species dragon --rarity legendary -
 
 This skill can be invoked with or without arguments:
 
-- **No args** (`/custom:buddy-reroll`): Prompts the user interactively via `AskUserQuestion` before running.
+- **No args** (`/custom:buddy-reroll`): Reads `~/.claude.json`'s `companion` field for the user's last species+rarity and re-rolls with that. Only asks via `AskUserQuestion` if there is no prior companion to inherit from (fresh install or just after `--apply`).
 - **Reroll only** (`/custom:buddy-reroll dragon legendary`): Skips the prompt and locks to the given species and rarity.
 - **Reroll + rename** (`/custom:buddy-reroll dragon legendary 沧海九粟 爱打盹的小龙`): Reroll, then immediately apply the given name and personality.
 - **Rename only** (`/custom:buddy-reroll 改名叫沧海九粟，个性是爱打盹的小龙`): Skip reroll, only change name and/or personality.
@@ -98,7 +98,7 @@ All four fields are optional. Any combination is valid.
 **Detect intent**:
 - If species or rarity found → **Reroll Workflow** (+ post-reroll rename if name/personality also found)
 - If only name and/or personality found (no species/rarity) → **Rename Workflow**
-- If no args at all → prompt interactively, detect from user's message whether they want reroll or rename
+- If no args at all → **Reroll Workflow** (which itself reads `companion` from `~/.claude.json` to inherit the previous target; falls back to asking only when no prior companion exists)
 
 ## Reroll Workflow
 
@@ -136,12 +136,21 @@ All four fields are optional. Any combination is valid.
 
 ---
 
-1. **If no args provided**: Use `AskUserQuestion` to ask the user to pick a species AND a rarity in a single prompt (two questions):
-   - **Species question**: Present 4 popular options (dragon, cat, axolotl, capybara) as choices. Each option's `description` should list the remaining species so the user knows what's available via "Other", e.g. the first option's description: "Or type any of: duck, goose, blob, octopus, owl, penguin, turtle, snail, ghost, cactus, robot, rabbit, mushroom, chonk".
-   - **Rarity question**: Present all 5 tiers (legendary as first/recommended, then epic, rare, uncommon, common).
-   - Do NOT skip this step. Always ask even if the user mentioned a species — confirm their choice.
+1. **Resolve target species + rarity** (this is the most common friction point — repeated questioning). Use this order:
 
-   **If species/rarity parsed from args**: Skip the prompt and proceed directly.
+   a. **Args parsed** (e.g. `/custom:buddy-reroll dragon legendary`): use the parsed values directly. Skip the prompt.
+
+   b. **No args**: read `~/.claude.json` and inspect the `companion` field:
+
+      - **`companion` is an object** (i.e. the user has already hatched a buddy): extract its `species` and `rarity` from the object — these reflect the user's last chosen preferences. Show them in one short sentence (e.g. "Last buddy: legendary capybara. Rerolling with the same target.") and proceed directly to step 2. **Do NOT re-ask.**
+
+      - **`companion` is `null` or missing** (fresh install or just after `--apply`): there is no prior preference to reuse. Ask with `AskUserQuestion` — species (4 popular options, see below) + rarity (5 tiers).
+
+         - **Species question**: Present 4 popular options (dragon, cat, axolotl, capybara) as choices. Each option's `description` should list the remaining species so the user knows what's available via "Other", e.g. the first option's description: "Or type any of: duck, goose, blob, octopus, owl, penguin, turtle, snail, ghost, cactus, robot, rabbit, mushroom, chonk".
+
+         - **Rarity question**: Present all 5 tiers (legendary as first/recommended, then epic, rare, uncommon, common).
+
+   **Field name note**: the `companion` object shape is owned by Claude Code and may change. If `species`/`rarity` keys aren't found, fall back to asking. Don't crash on unexpected shape — just treat it as "no prior preference".
 2. Run the script with `--apply`:
    ```bash
    npx -y bun ${SKILL_DIR}/scripts/reroll.mjs --species <choice> --rarity <choice> --apply
