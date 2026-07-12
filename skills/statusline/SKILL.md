@@ -172,7 +172,7 @@ Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbo
 
 **Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
 ```
-✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
+✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code-custom | ⎇ main
 ```
 (bar green — 88% remaining; effort "medium" yellow)
 

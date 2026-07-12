@@ -1,4 +1,4 @@
-# 🛠️ claude-code
+# 🛠️ claude-code-custom
 
 Claude Code 实用技能插件 —— 定制与黑科技合集。
 
@@ -8,10 +8,10 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 ```bash
 # 添加 marketplace(只需执行一次)
-/plugin marketplace add gitboy808/claude-code
+/plugin marketplace add gitboy808/claude-code-custom
 
 # 安装 custom 插件(默认 user 作用域)
-/plugin install custom@gitboy808-claude-code
+/plugin install custom@gitboy808-claude-code-custom
 
 # 加载插件
 /reload-plugins
@@ -50,7 +50,7 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 <details><summary>纯文本</summary>
 
 ```
-✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code | ⎇ main
+✦ Opus 4.7 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code-custom | ⎇ main
 ```
 
 </details>
