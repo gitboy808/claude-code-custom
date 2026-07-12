@@ -15,7 +15,8 @@
       "strict": false,
       "skills": [
         "./skills/statusline",
-        "./skills/buddy-reroll"
+        "./skills/buddy-reroll",
+        "./skills/settings-config"
       ]
     }
   ]

@@ -114,6 +114,39 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 > 💡 **还原默认:** 如需回到 Claude Code 原生空白状态栏,运行 `/custom:statusline restore-default` —— 会把生成的脚本备份到 `~/.claude/backups/statusline-<timestamp>.sh`、清除 `settings.json` 中的 `statusLine` 字段、删除生成的脚本,其余设置原样保留。已在默认状态时直接退出 0,不创建空备份。
 
+### ⚙️ /custom:settings-config
+
+一次性配置 `~/.claude/settings.json` 的 4 个核心字段,基于 `elements` 配置表驱动,以后加字段只需在 `ELEMENTS` 数组里加一行。
+
+#### 在 Claude Code 中调用
+
+```
+# 交互式 — 选 preset 然后逐字段提示
+/custom:settings-config
+
+# 一键配全部 4 个字段(用默认值:中文/xhigh/auto/1)
+/custom:settings-config full
+
+# 自然语言参数 — 解析后直接 install
+/custom:settings-config effort high language 中文
+
+# 还原默认状态(备份 settings.json 后删除本 skill 管理的 4 个字段)
+/custom:settings-config restore-default
+```
+
+#### 可配置字段
+
+| 字段 | settings.json 路径 | 合法值 | 默认 |
+|------|--------------------|--------|------|
+| `language` | `language` | `中文`, `English` | `"中文"` |
+| `effortLevel` | `effortLevel` | `low`, `xlow`, `minimal`, `medium`, `high`, `xhigh`, `max` | `"xhigh"` |
+| `permissions.mode` | `permissions.defaultMode` | `auto`, `acceptEdits`, `plan`, `bypassPermissions` | `"auto"` |
+| `env.traffic` | `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` | `0`, `1` | `"1"` |
+
+> 💡 **扩展性:** 未来添加 `outputStyle`、`theme`、`CleanupPeriodDays` 等字段,只需在 `skills/settings-config/scripts/configure.mjs` 的 `ELEMENTS` 数组追加一项 + 在 SKILL.md 字段表加一行,主流程完全不需要改动。
+
+> 💡 **还原默认:** 运行 `/custom:settings-config restore-default` —— 备份当前 `settings.json` 到 `~/.claude/backups/settings-<timestamp>.json`,删除 `language` / `effortLevel` / `permissions.defaultMode` / `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` 四个字段,**其它字段(env 其它键、plugins、hooks、statusLine 等)全部原样保留**。已处于默认状态时直接退出 0,不创建空备份。
+
 ### 🎰 /custom:buddy-reroll
 
 重新抽取 `/buddy` 宠物伙伴,指定物种和稀有度 —— 包括 ✨ 传说级。还能给宠物改名、自定义个性描述。
