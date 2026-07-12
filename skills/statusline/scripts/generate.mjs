@@ -3,7 +3,7 @@
 //
 // Usage: bun generate.mjs --elements model,context,style,git,dir,vim --theme gruvbox --icon ✦ --install
 
-import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync, copyFileSync, unlinkSync } from 'fs'
 import { join } from 'path'
 import { homedir } from 'os'
 
@@ -18,6 +18,7 @@ const elements = getArg('elements', 'model,context,cost,effort,style,git,dir').s
 const theme = getArg('theme', 'gruvbox')
 const effortIconFlag = getArg('effort-icon', '')  // optional override; see themes.effort icons
 const install = hasFlag('install')
+const restoreDefault = hasFlag('restore-default')
 
 // ── Theme definitions ──────────────────────────────────────────────
 const themes = {
@@ -453,6 +454,55 @@ function buildScript() {
 }
 
 const script = buildScript()
+
+// ── Restore-default mode ──────────────────────────────────────────
+if (restoreDefault) {
+  const scriptsDir = join(homedir(), '.claude', 'scripts')
+  const scriptPath = join(scriptsDir, 'statusline.sh')
+  const settingsPath = join(homedir(), '.claude', 'settings.json')
+
+  // Read settings.json defensively — same pattern as install branch
+  let settings = {}
+  if (existsSync(settingsPath)) {
+    try {
+      settings = JSON.parse(readFileSync(settingsPath, 'utf8'))
+    } catch {}
+  }
+
+  // Idempotent: nothing to restore when settings.statusLine is absent
+  if (!settings.statusLine) {
+    console.log('已是默认状态,无需还原。')
+    process.exit(0)
+  }
+
+  // ── Backup generated script under ~/.claude/backups/ ──
+  const backupsDir = join(homedir(), '.claude', 'backups')
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const backupPath = join(backupsDir, `statusline-${timestamp}.sh`)
+
+  mkdirSync(backupsDir, { recursive: true })
+
+  if (existsSync(scriptPath)) {
+    copyFileSync(scriptPath, backupPath)
+    console.log(`Backed up ${scriptPath} -> ${backupPath}`)
+  } else {
+    console.log(`Warning: ${scriptPath} not present on disk; nothing backed up.`)
+  }
+
+  // ── Remove statusLine from settings (preserve all other fields) ──
+  delete settings.statusLine
+  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n')
+  console.log(`Removed statusLine from ${settingsPath}`)
+
+  // ── Delete the generated script if present ──
+  if (existsSync(scriptPath)) {
+    unlinkSync(scriptPath)
+    console.log(`Deleted ${scriptPath}`)
+  }
+
+  console.log('已还原 Claude Code 原生空白状态栏。重启 Claude Code 生效。')
+  process.exit(0)
+}
 
 if (!install) {
   // Preview mode

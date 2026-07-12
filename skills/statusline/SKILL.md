@@ -1,6 +1,6 @@
 ---
 name: statusline
-description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", or similar.
+description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", "还原状态栏", "restore default status", or similar.
 ---
 
 # Status Line Generator
@@ -40,6 +40,9 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git
 
 # Generate and install
 npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme dracula --install
+
+# Restore Claude Code's default (empty) status line
+npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
 ```
 
 ### Options
@@ -50,6 +53,7 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git
 | `--theme <name>` | `gruvbox` | Color theme — see table below |
 | `--effort-icon <preset>` | `arrow` (`↯`) for iconic themes, none otherwise | Override the effort prefix icon. Presets: `arrow`, `bolt`, `flash`, `reason`, `dot`, `none`. A raw character is also accepted. |
 | `--install` | off | Write script to `~/.claude/scripts/statusline.sh` and update `settings.json` |
+| `--restore-default` | off | Backup `~/.claude/scripts/statusline.sh` to `~/.claude/backups/statusline-<timestamp>.sh`, remove `statusLine` from `~/.claude/settings.json`, and delete the generated script. Idempotent: exits 0 with no backup when already in default state. |
 
 ### Columns
 
@@ -188,3 +192,22 @@ Claude Opus 4.7 · low · claude-code · main
 - Running the skill again overwrites the existing script — just re-run to change theme or columns
 - The script uses `jq` to parse JSON input — make sure it's installed. On Windows, the script auto-detects WinGet and scoop jq paths; if jq is still not found, add it to PATH manually.
 - Git dirty detection uses `--no-optional-locks` to avoid interfering with other git operations
+- Use `--restore-default` to revert to Claude Code's built-in empty status line (see below)
+
+## Restoring the default status line
+
+Reverting to Claude Code's built-in empty status bar is one flag:
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
+```
+
+What it does, in order:
+
+1. Reads `~/.claude/settings.json` and removes the `statusLine` field. All other fields (`enabledPlugins`, `hooks`, `mcpServers`, `permissions`, `effortLevel`, …) are preserved.
+2. Copies `~/.claude/scripts/statusline.sh` (if present) to `~/.claude/backups/statusline-<timestamp>.sh` so you can restore by hand later.
+3. Deletes `~/.claude/scripts/statusline.sh`.
+
+Idempotent: if `settings.json` has no `statusLine` field, the command prints `已是默认状态,无需还原。` and exits 0 without creating an empty backup. Restart Claude Code after running.
+
+To re-install later, run the regular `--install` command again — the script is regenerated from your current flags.

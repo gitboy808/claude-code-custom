@@ -66,6 +66,9 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 # 自然语言
 /custom:statusline 极简主题 加上git分支和进度条
+
+# 还原 Claude Code 默认(空白)状态栏
+/custom:statusline restore-default
 ```
 
 #### 可显示字段(多选)
@@ -108,6 +111,8 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 **替换 effort 图标** 用 `--effort-icon`。预设值:`arrow`(`↯`,默认)、`bolt`(`ϟ`)、`flash`(`⚡`)、`reason`(`∴`)、`dot`(`◉`)、`none`(隐藏)。也可直接传入任意字符。
 
 > ⚠️ **注意:** 生成的脚本需要 `jq` 解析 JSON。在 Windows 下,脚本会自动检测 WinGet 和 scoop 安装的 jq 路径;若仍无法找到 jq,请手动将其目录添加到 PATH。本技能会自动写入 `~/.claude/scripts/statusline.sh` 并更新 `~/.claude/settings.json` —— 重启 Claude Code 即可生效。
+
+> 💡 **还原默认:** 如需回到 Claude Code 原生空白状态栏,运行 `/custom:statusline restore-default` —— 会把生成的脚本备份到 `~/.claude/backups/statusline-<timestamp>.sh`、清除 `settings.json` 中的 `statusLine` 字段、删除生成的脚本,其余设置原样保留。已在默认状态时直接退出 0,不创建空备份。
 
 ### 🎰 /custom:buddy-reroll
 
