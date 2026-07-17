@@ -15,7 +15,8 @@
       "strict": false,
       "skills": [
         "./skills/statusline",
-        "./skills/settings-config"
+        "./skills/settings-config",
+        "./skills/coding-spec"
       ]
     }
   ]
