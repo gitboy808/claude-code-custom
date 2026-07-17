@@ -16,7 +16,8 @@
       "skills": [
         "./skills/statusline",
         "./skills/settings-config",
-        "./skills/coding-spec"
+        "./skills/coding-spec",
+        "./skills/git-commit"
       ]
     }
   ]
