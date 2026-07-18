@@ -1,5 +1,3 @@
-# AGENTS.md
-
 ## Project Overview
 
 Claude Code marketplace plugin providing utility skills for customization and hacks.
