@@ -7,10 +7,10 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 通过 Claude Code 官方插件市场安装:
 
 ```bash
-# 添加 marketplace(只需执行一次)
+# 添加 marketplace
 /plugin marketplace add gitboy808/claude-code-custom
 
-# 安装 custom 插件(默认 user 作用域)
+# 安装 custom 插件
 /plugin install custom@gitboy808-claude-code-custom
 
 # 加载插件
@@ -160,6 +160,58 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 > 💡 **还原默认:** 运行 `/custom:settings-config restore-default` —— 备份当前 `settings.json` 到 `~/.claude/backups/settings-<timestamp>.json`,删除 `language` / `effortLevel` / `permissions.defaultMode` / `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` 四个字段,**其它字段(env 其它键、plugins、hooks、statusLine 等)全部原样保留**。已处于默认状态时直接退出 0,不创建空备份。
 
-## 📄 许可证
+### 📝 /custom:git-commit
 
-MIT
+分析 Git 改动并生成分子化的 [Conventional Commits](https://www.conventionalcommits.org/) 提交信息,确认后再执行暂存和提交。支持拆分提交、`--amend`、`--signoff`、emoji、指定 type/scope。
+
+#### 在 Claude Code 中调用
+
+```
+# 交互式分析已暂存改动
+/custom:git-commit
+
+# 暂存区为空时自动 git add -A(仍需二次确认)
+/custom:git-commit --all
+
+# 修补上一次提交
+/custom:git-commit --amend
+
+# 使用 emoji 前缀
+/custom:git-commit --emoji
+```
+
+> ⚠️ **安全边界:** 该 skill **强制用户手动调用**,且每次执行 `git commit` 前都会通过 `AskUserQuestion` 二次确认。不会擅自运行构建、测试或改写未授权的改动。
+
+### 🧩 /custom:coding-spec
+
+编码实施阶段的自动触发规范:优先最小可行方案,先问需求是否真实存在(YAGNI),复用仓库已有代码,优先标准库与平台原生特性,只在必要时写刚好够用的代码。
+
+#### 触发场景
+
+- 用户说"用最简单的方案"、"不要过度设计"、"YAGNI"
+- 用户抱怨代码臃肿、样板代码过多
+- 编写、重构、修复、审查代码时
+
+> 💡 不用于业务分析、方案设计或纯文档请求。
+
+### 🧹 /custom:purge-session
+
+彻底清理单个 Claude Code 历史会话在本地留下的所有痕迹:transcripts、file history、tasks、telemetry、jobs、history entries 以及 dangling 的 `lastSessionId` 引用。
+
+#### 在 Claude Code 中调用
+
+```
+# 交互式列出并选择要清理的会话
+/custom:purge-session
+
+# 直接指定会话 ID 或显示名
+/custom:purge-session <session-id-or-name>
+```
+
+#### 安全边界
+
+- **必须手动调用**(`disable-model-invocation: true`),模型不会自动触发。
+- 拒绝清理当前正在运行的活动会话。
+- 操作前显示 dry-run 清单,并要求用户输入 `delete <session-id>` 精确确认。
+- 所有删除路径限制在配置的 Claude 数据目录内。
+- 可传入 `--backup` 在改写 `.claude.json` 和 `history.jsonl` 前自动备份。
