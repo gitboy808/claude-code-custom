@@ -52,7 +52,7 @@ const ELEMENTS = [
     label: '推理努力度',
     default: 'xhigh',
     apply: (v) => v,
-    choices: ['low', 'xlow', 'minimal', 'medium', 'high', 'xhigh', 'max'],
+    choices: ['low', 'medium', 'high', 'xhigh', 'max'],
   },
   {
     key: 'permissions.mode',
