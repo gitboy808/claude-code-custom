@@ -1,6 +1,6 @@
 ---
 name: statusline
-description: Generate and install a custom Claude Code status line with selectable columns (model, context, effort level, git, dir, worktree, vim) and a color theme. Context and effort elements color-change based on level. Triggers on "status line", "statusline", "customize status", "status bar", "effort level display", "状态栏", "还原状态栏", "restore default status", or similar.
+description: Generate and install a custom Claude Code status line with selectable columns and color theme. Triggers on "status line", "statusline", "状态栏", "customize status", or "restore default status".
 ---
 
 # Status Line Generator

@@ -1,6 +1,6 @@
 ---
 name: settings-config
-description: Configure ~/.claude/settings.json with one command — set language, effortLevel, permissions.defaultMode, and CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC. Restore default settings with --restore-default. Triggers on "配置 claude code", "设置 settings.json", "改 effort", "改权限模式", "改输出语言", "禁用流量", "还原 settings", "settings config", "restore settings", "default settings", or similar.
+description: 当用户想配置 Claude Code 设置、修改输出语言/推理强度/权限模式/非必要流量，或还原默认 settings.json 时触发。
 ---
 
 # Settings Config

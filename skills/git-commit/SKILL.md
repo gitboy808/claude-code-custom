@@ -18,7 +18,6 @@ disable-model-invocation: true
 
 | 参数 | 行为 |
 | --- | --- |
-| `--all` | 暂存区为空时执行 `git add -A` |
 | `--amend` | 修补上一次提交，不创建新提交 |
 | `--no-verify` | 跳过本地 Git 钩子 |
 | `--signoff` | 添加 `Signed-off-by` trailer |
@@ -38,8 +37,6 @@ disable-model-invocation: true
 2. **分析改动**
    - 使用 `git diff --cached` 检查已暂存改动，使用 `git diff` 和 `git status --short` 补充了解未暂存及未跟踪文件。
    - 有已暂存内容时，以暂存区为本次提交边界，不自动加入其它改动。
-   - 暂存区为空且指定 `--all` 时，将 `git add -A` 纳入待确认方案，但此时不得执行。
-   - 暂存区为空且未指定 `--all` 时，仅给出分组与暂存建议，不执行提交。
 
 3. **判断是否拆分**
    - 不同关注点、模块或提交类型应拆分。
@@ -114,7 +111,7 @@ Closes #42
 - 不使用 `git reset --hard`、`git checkout --` 等会丢失工作区改动的命令。
 - 误暂存时只使用 `git restore --staged <pathspec>`，不改变文件内容。
 - 不改写用户未明确要求纳入本次提交的改动。
-- 二次确认是强制安全门槛，不因 `--all`、`--amend`、`--no-verify` 或任何用户参数而跳过。
+- 二次确认是强制安全门槛，不因 `--amend`、`--no-verify` 或任何用户参数而跳过。
 
 ## 脚本目录
 
