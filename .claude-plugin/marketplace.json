@@ -17,7 +17,8 @@
         "./skills/statusline",
         "./skills/settings-config",
         "./skills/coding-spec",
-        "./skills/git-commit"
+        "./skills/git-commit",
+        "./skills/purge-session"
       ]
     }
   ]
