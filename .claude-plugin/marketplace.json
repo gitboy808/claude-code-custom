@@ -5,21 +5,13 @@
   },
   "metadata": {
     "description": "Claude Code utility skills for customization and hacks",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "plugins": [
     {
       "name": "custom",
       "description": "Claude Code customization and hack skills",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/statusline",
-        "./skills/settings-config",
-        "./skills/coding-spec",
-        "./skills/git-commit",
-        "./skills/purge-session"
-      ]
+      "source": "./"
     }
   ]
 }
