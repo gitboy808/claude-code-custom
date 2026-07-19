@@ -1,8 +1,8 @@
 # Status Line Generator — Implementation Notes
 
-本文件是 `SKILL.md` 的 disclosed reference，记录 `generate.mjs` 的行为、实现细节和示例。日常执行只需遵循 `SKILL.md` 的 Workflow；构建 `AskUserQuestion` 选项、解析自然语言参数、调试或扩展时再阅读此处。
+本文件是 `SKILL.md` 的 disclosed reference，记录 `generate.mjs` 的行为细节与示例。日常执行只需遵循 `SKILL.md` 的 Workflow；调试、扩展或处理边界情况时再阅读此处。
 
-实时能力清单（列、预设、主题、effort 图标）由脚本自身提供，避免文档与代码重复。需要时运行以下命令：
+能力清单（列、预设、主题、effort 图标）由脚本自描述，避免文档与代码重复。查询命令：
 
 ```bash
 npx -y bun ${SKILL_DIR}/scripts/generate.mjs --help
@@ -10,14 +10,6 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-columns
 npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-presets
 npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-effort-icons
 ```
-
-运行前将 `${SKILL_DIR}` 替换为本技能目录。
-
-## Script Directory
-
-| Script | Purpose |
-|--------|---------|
-| `scripts/generate.mjs` | Generate and install the status line bash script |
 
 ## CLI Flags
 
@@ -34,35 +26,7 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git
 npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
 ```
 
-## Column Presets
-
-无参数调用 `/custom:statusline` 时，提供三个预设：
-
-- **Everything (Recommended)** — 所有常用列（不含 vim）。
-- **Default** — 均衡配置。
-- **Essentials** — 最精简。
-
-完整元素列表运行 `--list-presets`。
-
-## Columns
-
-运行 `--list-columns` 查看所有支持的列、数据源和隐藏规则。特殊规则：
-
-- `context` 只用彩色进度条作为视觉信号，没有 prefix icon。
-- `cost` 在低于 $0.005 时隐藏。
-- `effort` 在未设置时隐藏。
-- `style` 在值为 `default` 时隐藏。
-- `worktree` 仅在 git worktree 中显示。
-- `vim` 仅在激活时显示。
-
-## Themes
-
-运行 `--help` 查看可用主题。当前包含：
-
-- `gruvbox` — 暖色复古，24-bit true color。
-- `dracula` — 现代暗色，高饱和度。
-- `robbyrussell` — 经典 oh-my-zsh 风格，无图标。
-- `minimal` — 终端默认颜色，无图标。
+`--install` 写入 `settings.json` 的 `statusLine.command` 为绝对路径。
 
 ## Color-changing Elements
 
@@ -114,22 +78,7 @@ effort 值和可选前缀图标按级别变色：
 4. 若存在则删除 `~/.claude/scripts/statusline.sh`。
 5. 打印 `已还原 Claude Code 原生空白状态栏。`
 
-## Install Verification
-
-`--install` 后，`settings.json` 中的 `statusLine.command` 是绝对路径。验证：
-
-```bash
-test -x ~/.claude/scripts/statusline.sh &&
-jq -e '.statusLine.command' ~/.claude/settings.json
-```
-
-`--restore-default` 后验证：
-
-```bash
-jq -e 'has("statusLine") | not' ~/.claude/settings.json
-```
-
-如果 `jq` 不可用，直接读取 `settings.json` 检查。
+同时传入 `--install` 与 `--restore-default` 时，先执行还原并退出。
 
 ## Output Examples
 
@@ -159,8 +108,4 @@ Claude Opus 4.8 · low · claude-code · main
 
 ## Notes
 
-- **jq** 是生成脚本运行所必需的。在 Windows 上，生成脚本会自动检测 WinGet 和 scoop 的 jq 路径；若仍找不到，请手动将其目录加入 PATH。
-- **Bun** 是运行生成器所必需的；若未全局安装，使用 `npx -y bun`。
-- 重复安装会覆盖 `~/.claude/scripts/statusline.sh`。
-- 还原默认会先备份现有脚本。
-- 如果同时传入 `--install` 和 `--restore-default`，先执行 `--restore-default` 并退出。
+- Windows 上，生成的脚本会自动检测 WinGet 和 scoop 的 jq 路径；若仍找不到，需手动将 jq 目录加入 PATH。

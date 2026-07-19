@@ -1,6 +1,6 @@
 ---
 name: statusline
-description: 配置或还原自定义 Claude Code 状态栏。触发词包括 "status line"、"statusline"、"状态栏"、"customize status"、"restore default status"、"还原"、"恢复默认"。
+description: 自定义 Claude Code statusline（状态栏）的列、主题与 effort 图标，或还原为默认空白状态栏。
 ---
 
 # Status Line Generator
@@ -21,12 +21,8 @@ description: 配置或还原自定义 Claude Code 状态栏。触发词包括 "s
 2. **收集偏好（仅 install 分支）**
    - **无参数**：用一次 `AskUserQuestion` 问两个问题。
      - **列**：提供三个预设：`Everything (Recommended)`、`Default`、`Essentials`。`AskUserQuestion` 会自动附加 `Other` 选项；将自由文本解析为逗号分隔的列名，或映射到自然语言描述。解析模糊时回退到 `Default`。
-     - **主题**：提供 `Dracula`、`Gruvbox Dark`、`Robbyrussell`、`Minimal`，映射到 [IMPLEMENTATION.md](IMPLEMENTATION.md) 中的规范主题名。
-     - 实时可用列和预设可通过 `--list-columns` / `--list-presets` 查询：
-       ```bash
-       npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-columns
-       npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-presets
-       ```
+     - **主题**：提供 `Dracula`（`dracula`）、`Gruvbox Dark`（`gruvbox`）、`Robbyrussell`（`robbyrussell`）、`Minimal`（`minimal`）。
+     - 预设的元素列表与实时列清单通过 `--list-presets` / `--list-columns` 查询；自描述命令用法见 [IMPLEMENTATION.md](IMPLEMENTATION.md)。
    - **有参数**：用 NLP 从自由文本中提取主题和列。识别别名（暗黑=dracula，极简=minimal，复古=gruvbox）。未指定字段使用 `--help` 中显示的默认值。
    - **完成标准**：已准备好有效的 `--elements <list>` 和 `--theme <name>`。
 
@@ -61,11 +57,11 @@ description: 配置或还原自定义 Claude Code 状态栏。触发词包括 "s
 
 6. **报告**
    - 总结变更，restore 时注明备份路径。变更立即生效，无需重启。
-   - **完成标准**：用户看到总结。
+   - **完成标准**：总结涵盖变更内容；restore 时包含备份路径。
 
 ## Notes
 
 - 运行生成器需要 **Bun**；若未全局安装，使用 `npx -y bun`。
 - 生成的状态栏脚本需要 **jq**；Windows 路径自动检测详见 [IMPLEMENTATION.md](IMPLEMENTATION.md#notes)。
 - 重复安装会覆盖 `~/.claude/scripts/statusline.sh`；还原默认会先备份。
-- 完整参数、列、预设、主题、effort 图标等实时数据，运行 `--help`、`--list-columns`、`--list-presets`、`--list-effort-icons` 查询；行为说明、示例和还原细节见 [IMPLEMENTATION.md](IMPLEMENTATION.md)。
+- 能力清单（参数默认值、列、预设、主题、effort 图标）以脚本自描述命令为准；查询命令、行为细节与示例见 [IMPLEMENTATION.md](IMPLEMENTATION.md)。
