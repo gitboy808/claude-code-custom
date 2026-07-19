@@ -1,213 +1,71 @@
 ---
 name: statusline
-description: Generate and install a custom Claude Code status line with selectable columns and color theme. Triggers on "status line", "statusline", "状态栏", "customize status", or "restore default status".
+description: 配置或还原自定义 Claude Code 状态栏。触发词包括 "status line"、"statusline"、"状态栏"、"customize status"、"restore default status"、"还原"、"恢复默认"。
 ---
 
 # Status Line Generator
 
-Generate a custom Claude Code status line script with your choice of columns and a color theme. Installs directly to `~/.claude/settings.json`.
-
-## How It Works
-
-Claude Code supports custom status lines via a shell script configured in `~/.claude/settings.json`. The script receives session JSON on stdin (model, context window, workspace, vim, worktree, etc.) and prints formatted text to stdout.
-
-This skill generates a bash script tailored to your preferences and installs it automatically.
+生成并安装自定义 Claude Code 状态栏脚本，或还原为内置空白状态栏。
 
 ## Script Directory
 
-**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
-
-**Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.mjs`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
-
-**Script Reference**:
-| Script | Purpose |
-|--------|---------|
-| `scripts/generate.mjs` | Generate and install status line script from chosen options |
-
-## Prerequisites
-
-- **jq** — required by the generated status line script to parse JSON input from Claude Code. On Windows, the script auto-detects jq installed via WinGet or scoop; if jq is still not found, add its directory to your PATH manually.
-- **Bun** — required to run the generator. Use `npx -y bun` if not installed globally.
-
-## Usage
-
-```bash
-# Preview generated script
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme gruvbox
-
-# Generate and install
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme dracula --install
-
-# Restore Claude Code's default (empty) status line
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
-```
-
-### Options
-
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--elements <list>` | `model,context,cost,effort,style,git,dir` | Comma-separated columns to display |
-| `--theme <name>` | `gruvbox` | Color theme — see table below |
-| `--effort-icon <preset>` | `arrow` (`↯`) for iconic themes, none otherwise | Override the effort prefix icon. Presets: `arrow`, `bolt`, `flash`, `reason`, `dot`, `none`. A raw character is also accepted. |
-| `--install` | off | Write script to `~/.claude/scripts/statusline.sh` and update `settings.json` |
-| `--restore-default` | off | Backup `~/.claude/scripts/statusline.sh` to `~/.claude/backups/statusline-<timestamp>.sh`, remove `statusLine` from `~/.claude/settings.json`, and delete the generated script. Idempotent: exits 0 with no backup when already in default state. |
-
-### Columns
-
-| Column | Description | Data source |
-|--------|-------------|-------------|
-| `model` | Active model name (e.g. "Opus 4.8") | `model.display_name` |
-| `context` | Progress bar + percentage — **color changes with remaining capacity** | `context_window.remaining_percentage` |
-| `cost` | Session API spend formatted as `$X.XX` in gold — hidden when rounds to `$0.00` | `cost.total_cost_usd` from input JSON |
-| `effort` | Reasoning effort level — **color changes with level** | `effortLevel` in `~/.claude/settings.local.json` → `~/.claude/settings.json` |
-| `style` | Output style name (e.g. Explanatory, Learning) — hidden when "default" | `output_style.name` from input JSON |
-| `git` | Git branch name (yellow when dirty) | `worktree.branch` → git CLI |
-| `dir` | Repo basename (original repo when in a worktree) | `worktree.original_repo_dir` → `workspace.current_dir` |
-| `worktree` | Bold `worktree:<id>` label (hidden outside a worktree) | `worktree.name` → parent-dir basename via git CLI |
-| `vim` | Vim mode indicator (hidden when inactive) | `vim.mode` |
-
-### Color-changing elements
-
-**`context`** — bar fill + percentage color scale with remaining capacity:
-
-| Remaining | Color | Meaning |
-|-----------|-------|---------|
-| > 50% | green | plenty of context |
-| 20–50% | yellow | watch out |
-| < 20% | red | nearly full — compact soon |
-
-**`effort`** — value + optional prefix icon color by level:
-
-| Level | Color |
-|-------|-------|
-| `max`, `xhigh`, `high` | **bold red** |
-| `medium` | yellow |
-| `low`, `xlow`, `minimal` | green |
-| other / unset | dim (or hidden when completely unset) |
-
-### Themes
-
-| Theme | Vibe | Icons rendered in bar |
-|-------|------|------------------------|
-| `gruvbox` | Warm retro, muted | `✦` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
-| `dracula` | Modern dark, high saturation | `◈` model · `↯` effort · `❋` style · `⌂` dir · `⊕` worktree · `⎇` git · `⌨` vim |
-| `robbyrussell` | Classic oh-my-zsh | no prefix icons — colors + labels only |
-| `minimal` | Default terminal colors | no prefix icons — plain text |
-
-The `context` column intentionally skips a prefix icon — the colored progress bar is already visually rich. The `effort` prefix (`↯`) is baked into iconic themes and can be overridden with `--effort-icon`.
-
-### Effort icons
-
-Pass `--effort-icon <preset>` to swap the glyph in front of the effort value. Presets:
-
-| Preset | Glyph | Notes |
-|--------|-------|-------|
-| `arrow` | `↯` | Electric arrow — **default**, narrow |
-| `bolt`  | `ϟ` | Greek koppa — narrow lightning |
-| `flash` | `⚡` | Classic lightning — wide in emoji-presentation fonts |
-| `reason`| `∴` | Therefore |
-| `dot`   | `◉` | Filled circle |
-| `none`  | (hidden) | Drop the icon entirely |
-
-You can also pass any raw character as `--effort-icon <char>`.
-
-**Worktree behavior**: When inside a git worktree (detected via the input JSON's `worktree.*` fields or via `git rev-parse --git-common-dir` fallback), the `worktree` column shows a bold `worktree:<id>` label using the parent dir name (e.g. `~/.codex/worktrees/46a6/clawmaster` → `worktree:46a6`). The `git` column prefers `worktree.branch` from the input JSON; the `dir` column prefers `worktree.original_repo_dir` so the repo identity stays stable across worktrees.
-
-## Invocation
-
-This skill can be invoked with or without arguments:
-
-- **No args** (`/custom:statusline`): Interactive prompt via `AskUserQuestion` to pick columns and theme.
-- **With args** (`/custom:statusline dracula`): NLP parse for theme and column preferences.
-
-### Arg parsing (natural language)
-
-The args string is free-form text. Use NLP to extract:
-
-1. **theme** — match against: gruvbox, robbyrussell, minimal, dracula. Recognize aliases (暗黑=dracula, 极简=minimal, 复古=gruvbox).
-2. **elements** — look for mentions of: model, context/进度, effort/推理强度, git/分支, dir/目录, worktree/工作树, vim.
-
-Unspecified fields use defaults: `model,context,effort,git,dir` columns, `gruvbox` theme.
+脚本位于 `${SKILL_DIR}/scripts/`。运行前将 `${SKILL_DIR}` 替换为本技能目录。生成器为 `${SKILL_DIR}/scripts/generate.mjs`。
 
 ## Workflow
 
-1. **If no args provided**: Use `AskUserQuestion` to ask 2 questions in a single prompt. `AskUserQuestion` caps each question at 4 options, so **offer curated presets for columns** rather than an exhaustive toggle list. If the user picks "Other", interpret their free text as a comma-separated column list (or a natural-language description that maps to one).
+1. **判断分支**
+   - **restore 分支**：用户提到 restore、default、还原、恢复默认 → 运行 `--restore-default`。
+   - **install 分支**：其他情况 → 收集列和主题，然后运行 `--install`。
+   - **完成标准**：分支明确。若不确定，问一个澄清问题。
 
-   **Q1 — Column preset** (single): Which columns to display? Offer these 3 curated presets — `AskUserQuestion` will auto-append an "Other" option that lets the user type a free-text column list or description.
-   - "Everything (Recommended)" — `model,context,cost,effort,style,git,dir,worktree` (all columns that have a useful signal today; `vim` is excluded because most users don't use vim keybindings)
-   - "Default" — `model,context,effort,style,git,dir` (balanced — drops cost and worktree; matches the skill's default flag value)
-   - "Essentials" — `model,context,git,dir` (lean; no effort, no style, no cost)
+2. **收集偏好（仅 install 分支）**
+   - **无参数**：用一次 `AskUserQuestion` 问两个问题。
+     - **列**：提供三个预设：`Everything (Recommended)`、`Default`、`Essentials`。`AskUserQuestion` 会自动附加 `Other` 选项；将自由文本解析为逗号分隔的列名，或映射到自然语言描述。解析模糊时回退到 `Default`。
+     - **主题**：提供 `Dracula`、`Gruvbox Dark`、`Robbyrussell`、`Minimal`，映射到 [IMPLEMENTATION.md](IMPLEMENTATION.md) 中的规范主题名。
+     - 实时可用列和预设可通过 `--list-columns` / `--list-presets` 查询：
+       ```bash
+       npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-columns
+       npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-presets
+       ```
+   - **有参数**：用 NLP 从自由文本中提取主题和列。识别别名（暗黑=dracula，极简=minimal，复古=gruvbox）。未指定字段使用 `--help` 中显示的默认值。
+   - **完成标准**：已准备好有效的 `--elements <list>` 和 `--theme <name>`。
 
-   If the user picks the auto-added "Other", treat their free text as a comma-separated column list, or as a natural-language description to map to columns. Fall back to `Default` if parsing is ambiguous.
+3. **映射为 flags**
+   - 预设或解析出的列 → `--elements <规范列名>`。
+   - 主题 → `--theme <规范主题名>`。
+   - 仅当用户明确要求更改 effort 前缀图标时才使用 `--effort-icon`；可用预设通过 `--list-effort-icons` 查询。
+   - **完成标准**：每个 flag 值都有效。
 
-   **Q2 — Theme** (single): Color theme?
-   - "Dracula" — modern dark, purple/pink/cyan (Recommended)
-   - "Gruvbox Dark" — warm retro palette, 24-bit true color
-   - "Robbyrussell" — classic oh-my-zsh style, no icons
-   - "Minimal" — no decoration, dim separators only
+4. **执行**
+   - install：
+     ```bash
+     npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements <list> --theme <theme> --install
+     ```
+   - restore：
+     ```bash
+     npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
+     ```
+   - **完成标准**：生成器退出码为 0。
 
-   **If args provided**: Parse theme and columns from args. Skip the prompt.
+5. **验证**
+   - install：确认 `~/.claude/scripts/statusline.sh` 存在且可执行，`~/.claude/settings.json` 中的 `statusLine.command` 指向该脚本：
+     ```bash
+     test -x ~/.claude/scripts/statusline.sh &&
+     jq -e '.statusLine.command' ~/.claude/settings.json
+     ```
+   - restore：确认 `~/.claude/settings.json` 没有 `statusLine` 字段：
+     ```bash
+     jq -e 'has("statusLine") | not' ~/.claude/settings.json
+     ```
+   - **完成标准**：验证命令成功。若 `jq` 不可用，直接读取 `settings.json`。
 
-2. Map user selections to script flags:
-   - Column preset → expand to the preset's canonical `--elements` list:
-     - `Everything` → `model,context,cost,effort,style,git,dir,worktree`
-     - `Default`    → `model,context,effort,style,git,dir`
-     - `Essentials` → `model,context,git,dir`
-     - `Other` (auto-added by `AskUserQuestion`) → parse the user's free text; keep only recognized column names (`model,context,cost,effort,style,dir,worktree,git,vim`). If parsing is ambiguous, fall back to `Default`.
-   - Theme → `--theme` value (one of `gruvbox`, `dracula`, `robbyrussell`, `minimal`)
-
-3. Run the generator with `--install`:
-   ```bash
-   npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements <list> --theme <theme> --install
-   ```
-
-4. Tell user to restart Claude Code to see the new status line.
-
-## Output Examples
-
-**Dracula** (all columns), remaining=49%, cost=$0.42, effort=high, output style=Explanatory, inside a worktree:
-```
-◈ Opus 4.8 | [■■■■■□□□□□] 51% | $0.42 | ↯ high | ❋ Explanatory | ⌂ clawmaster | ⊕ worktree:46a6 | ⎇ feat/xyz
-```
-(bar yellow — 49% remaining; `$0.42` gold session spend next to the bar; effort "high" bold red; purple `❋ Explanatory` sits between effort and dir; context carries no prefix icon — the bar is already visual enough)
-
-**Gruvbox Dark** (model + context + effort + dir + git), remaining=88%, effort=medium:
-```
-✦ Opus 4.8 | [■□□□□□□□□□] 12% | ↯ medium | ⌂ claude-code-custom | ⎇ main
-```
-(bar green — 88% remaining; effort "medium" yellow)
-
-**Minimal** (model + effort + dir + git), effort=low:
-```
-Claude Opus 4.8 · low · claude-code · main
-```
-(no prefix icons in minimal; effort "low" green)
+6. **报告**
+   - 总结变更，restore 时注明备份路径。变更立即生效，无需重启。
+   - **完成标准**：用户看到总结。
 
 ## Notes
 
-- Generated script is saved to `~/.claude/scripts/statusline.sh`
-- Running the skill again overwrites the existing script — just re-run to change theme or columns
-- The script uses `jq` to parse JSON input — make sure it's installed. On Windows, the script auto-detects WinGet and scoop jq paths; if jq is still not found, add it to PATH manually.
-- Git dirty detection uses `--no-optional-locks` to avoid interfering with other git operations
-- Use `--restore-default` to revert to Claude Code's built-in empty status line (see below)
-
-## Restoring the default status line
-
-Reverting to Claude Code's built-in empty status bar is one flag:
-
-```bash
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
-```
-
-What it does, in order:
-
-1. Reads `~/.claude/settings.json` and removes the `statusLine` field. All other fields (`enabledPlugins`, `hooks`, `mcpServers`, `permissions`, `effortLevel`, …) are preserved.
-2. Copies `~/.claude/scripts/statusline.sh` (if present) to `~/.claude/backups/statusline-<timestamp>.sh` so you can restore by hand later.
-3. Deletes `~/.claude/scripts/statusline.sh`.
-
-Idempotent: if `settings.json` has no `statusLine` field, the command prints `已是默认状态,无需还原。` and exits 0 without creating an empty backup. Restart Claude Code after running.
-
-To re-install later, run the regular `--install` command again — the script is regenerated from your current flags.
+- 运行生成器需要 **Bun**；若未全局安装，使用 `npx -y bun`。
+- 生成的状态栏脚本需要 **jq**；Windows 路径自动检测详见 [IMPLEMENTATION.md](IMPLEMENTATION.md#notes)。
+- 重复安装会覆盖 `~/.claude/scripts/statusline.sh`；还原默认会先备份。
+- 完整参数、列、预设、主题、effort 图标等实时数据，运行 `--help`、`--list-columns`、`--list-presets`、`--list-effort-icons` 查询；行为说明、示例和还原细节见 [IMPLEMENTATION.md](IMPLEMENTATION.md)。
