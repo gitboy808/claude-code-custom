@@ -215,3 +215,14 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 - 操作前显示 dry-run 清单,并要求用户输入 `delete <session-id>` 精确确认。
 - 所有删除路径限制在配置的 Claude 数据目录内。
 - 可传入 `--backup` 在改写 `.claude.json` 和 `history.jsonl` 前自动备份。
+
+### 🖊️ /custom:humanizer-zh
+
+把中文文本从「像模型拼出来的稿子」改成「像中文母语者真的写出来的文章」:去翻译腔、空泛大词、机械结构、排版腔和判断腔,同时保留原文事实、立场和信息密度。可选叠加 8 位中文作者的声音(李笑来、鹤老师、罗振宇、吴军、李尚龙、何帆、冯唐、刘子超)。
+
+#### 触发场景
+
+- 用户说「去 AI 味」「润色成中文母语表达」「改得像博客或书里写的」「减少翻译腔」
+- 改写、编辑或审校中文博客、专栏、newsletter、书稿、产品分析或长篇评论
+
+> 💡 深度改写时会按需加载 `references/patterns.md`(AI 味模式库)与 `references/corpus.md`(母语写作参照);选定作者声音后,对应档案的规则优先于通用规则。移植自 [ai-zixun/humanizer-zh](https://github.com/ai-zixun/humanizer-zh)。
