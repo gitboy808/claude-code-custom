@@ -1,40 +1,90 @@
 # 🛠️ claude-code-custom
 
-Claude Code 实用技能插件 —— 定制与黑科技合集。
+Claude Code 实用技能仓库。支持通过 Agent Skills 使用短命令，也保留 Claude Code marketplace 分发。
 
 ## 📦 安装
 
-通过 Claude Code 官方插件市场安装:
+### Agent Skills（推荐）
+
+按需安装，安装后的命令是简短的 `/skill-name`：
 
 ```bash
-# 添加 marketplace
-/plugin marketplace add gitboy808/claude-code-custom
-
-# 安装 custom 插件
-/plugin install custom@gitboy808-claude-code-custom
-
-# 加载插件
-/reload-plugins
+npx skills add gitboy808/claude-code-custom \
+  --agent claude-code \
+  --skill statusline \
+  --yes
 ```
+
+一次安装多个 skill：
+
+```bash
+npx skills add gitboy808/claude-code-custom \
+  --agent claude-code \
+  --skill statusline git-commit humanizer-zh \
+  --yes
+```
+
+默认安装到当前项目。使用 `npx skills update <skill> --project` 更新，使用 `npx skills remove <skill>` 删除。仅在希望所有项目都能使用时添加 `--global`。
+
+| Skill | 调用方式 |
+|-------|----------|
+| Statusline | `/statusline` |
+| Settings Config | `/settings-config` |
+| Git Commit | `/git-commit` |
+| Coding Spec | 自动触发，也可调用 `/coding-spec` |
+| Purge Session | `/purge-session` |
+| Humanizer ZH | 自动触发，也可调用 `/humanizer-zh` |
+
+### Claude Code Marketplace（可选）
+
+需要 `/plugin` UI、scope 管理或独立 semver 时，可以继续使用 marketplace：
+
+```bash
+/plugin marketplace add gitboy808/claude-code-custom
+```
+
+| 插件 | 安装命令 | 调用方式 |
+|------|----------|----------|
+| Statusline | `/plugin install statusline@gitboy808-claude-code-custom` | `/statusline:statusline` |
+| Settings Config | `/plugin install settings-config@gitboy808-claude-code-custom` | `/settings-config:settings-config` |
+| Git Commit | `/plugin install git-commit@gitboy808-claude-code-custom` | `/git-commit:git-commit` |
+| Coding Spec | `/plugin install coding-spec@gitboy808-claude-code-custom` | 自动触发，也可调用 `/coding-spec:coding-spec` |
+| Purge Session | `/plugin install purge-session@gitboy808-claude-code-custom` | `/purge-session:purge-session` |
+| Humanizer ZH | `/plugin install humanizer-zh@gitboy808-claude-code-custom` | 自动触发，也可调用 `/humanizer-zh:humanizer-zh` |
 
 > 💡 安装时 Claude Code 会询问作用域:user(全局)/ project(随仓库共享)/ local(本仓库私有)。由 `claude plugin install --scope {user|project|local}` 或 `/plugin` UI 交互式选择。
 
-## 🔄 同步本地修改到已安装插件
+> ⚠️ Agent Skills 和 marketplace 请选择一种安装方式。同一个能力安装两份不会覆盖，但会让 Claude 同时看到无命名空间和插件命名空间两个版本。
 
-改了本仓库里的 `SKILL.md` / 脚本后,**已经安装的插件不会自动更新** —— 因为 Claude Code 用的是 **plugin cache**(按 git commit hash 打包的快照),路径是 `~/.claude/plugins/cache/<marketplace>/<plugin>/<commit>/`。working tree 和 cache 是两个独立目录,改 working tree 不会影响 cache。
+### 从旧版 `custom` 插件迁移
 
-要让本地修改立即生效,选其一:
+旧的 bundle 已移除。先卸载它，再按推荐方式安装所需 skill：
+
+```bash
+/plugin uninstall custom@gitboy808-claude-code-custom
+npx skills add gitboy808/claude-code-custom --agent claude-code --skill statusline --yes
+```
+
+## 🔄 本地开发与发布
+
+Marketplace 安装会把插件复制到 `~/.claude/plugins/cache`，不会直接读取 working tree。本地调试时直接加载目标插件目录：
+
+```bash
+claude --plugin-dir ./plugins/statusline
+```
 
 | 场景 | 操作 |
 |------|------|
-| 调试中、想立刻验证 | `cp skills/<skill>/SKILL.md ~/.claude/plugins/marketplaces/gitboy808-claude-code-custom/skills/<skill>/SKILL.md` 然后 `rm -rf ~/.claude/plugins/cache/gitboy808-claude-code-custom`(下次启动自动重打包) |
-| 正式发布 | `git add . && git commit && git push` → marketplace 自动 `git pull` → 重新 `/plugin install` / `/reload-plugins` 让 cache 重建 |
-
-> 💡 验证插件加载到的是哪一份:`md5 ~/.claude/plugins/marketplaces/gitboy808-claude-code-custom/skills/<skill>/SKILL.md ~/.claude/plugins/cache/gitboy808-claude-code-custom/custom/*/skills/<skill>/SKILL.md`。两者不一致 → cache 滞后。
+| 校验 marketplace 和插件 | `claude plugin validate --strict .`，再校验对应的 `plugins/<plugin>` |
+| 校验 Agent Skills 发现 | `npx skills add . --agent claude-code --list` |
+| 调试 working tree | `claude --plugin-dir ./plugins/<plugin>` |
+| 正式发布 | bump 已修改插件的 `plugin.json` semver，commit 并 push；用户运行 `/plugin marketplace update`、`/plugin update <plugin>@gitboy808-claude-code-custom` 和 `/reload-plugins` |
 
 ## 🎮 技能列表
 
-### 📊 /custom:statusline
+> 下文使用 Agent Skills 短命令。Marketplace 用户将 `/name` 替换为 `/name:name`。
+
+### 📊 /statusline
 
 生成并安装自定义 Claude Code 状态栏。选择 **字段** 和 **主题**,仅此而已。其中两个字段(`context` 和 `effort`)会 **随级别动态换色**,一眼看清当前状态。
 
@@ -72,16 +122,16 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 ```
 # 交互式 — 依次选择字段和主题
-/custom:statusline
+/statusline
 
 # 快速选择主题
-/custom:statusline dracula
+/statusline dracula
 
 # 自然语言
-/custom:statusline 极简主题 加上git分支和进度条
+/statusline 极简主题 加上git分支和进度条
 
 # 还原 Claude Code 默认(空白)状态栏
-/custom:statusline restore-default
+/statusline restore-default
 ```
 
 #### 可显示字段(多选)
@@ -125,9 +175,9 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 > ⚠️ **注意:** 生成的脚本需要 `jq` 解析 JSON。在 Windows 下,脚本会自动检测 WinGet 和 scoop 安装的 jq 路径;若仍无法找到 jq,请手动将其目录添加到 PATH。本技能会自动写入 `~/.claude/scripts/statusline.sh` 并更新 `~/.claude/settings.json` —— 重启 Claude Code 即可生效。
 
-> 💡 **还原默认:** 如需回到 Claude Code 原生空白状态栏,运行 `/custom:statusline restore-default` —— 会把生成的脚本备份到 `~/.claude/backups/statusline-<timestamp>.sh`、清除 `settings.json` 中的 `statusLine` 字段、删除生成的脚本,其余设置原样保留。已在默认状态时直接退出 0,不创建空备份。
+> 💡 **还原默认:** 如需回到 Claude Code 原生空白状态栏,运行 `/statusline restore-default` —— 会把生成的脚本备份到 `~/.claude/backups/statusline-<timestamp>.sh`、清除 `settings.json` 中的 `statusLine` 字段、删除生成的脚本,其余设置原样保留。已在默认状态时直接退出 0,不创建空备份。
 
-### ⚙️ /custom:settings-config
+### ⚙️ /settings-config
 
 一次性配置 `~/.claude/settings.json` 的 4 个核心字段,基于 `elements` 配置表驱动,以后加字段只需在 `ELEMENTS` 数组里加一行。
 
@@ -135,16 +185,16 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 ```
 # 交互式 — 选 preset 然后逐字段提示
-/custom:settings-config
+/settings-config
 
 # 一键配全部 4 个字段(用默认值:中文/xhigh/auto/1)
-/custom:settings-config full
+/settings-config full
 
 # 自然语言参数 — 解析后直接 install
-/custom:settings-config effort high language 中文
+/settings-config effort high language 中文
 
 # 还原默认状态(备份 settings.json 后删除本 skill 管理的 4 个字段)
-/custom:settings-config restore-default
+/settings-config restore-default
 ```
 
 #### 可配置字段
@@ -156,11 +206,11 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 | `permissions.mode` | `permissions.defaultMode` | `auto`, `acceptEdits`, `plan`, `bypassPermissions` | `"auto"` |
 | `env.traffic` | `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` | `0`, `1` | `"1"` |
 
-> 💡 **扩展性:** 未来添加 `outputStyle`、`theme`、`CleanupPeriodDays` 等字段,只需在 `skills/settings-config/scripts/configure.mjs` 的 `ELEMENTS` 数组追加一项 + 在 SKILL.md 字段表加一行,主流程完全不需要改动。
+> 💡 **扩展性:** 未来添加 `outputStyle`、`theme`、`CleanupPeriodDays` 等字段,只需在 `plugins/settings-config/skills/settings-config/scripts/configure.mjs` 的 `ELEMENTS` 数组追加一项 + 在 SKILL.md 字段表加一行,主流程完全不需要改动。
 
-> 💡 **还原默认:** 运行 `/custom:settings-config restore-default` —— 备份当前 `settings.json` 到 `~/.claude/backups/settings-<timestamp>.json`,删除 `language` / `effortLevel` / `permissions.defaultMode` / `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` 四个字段,**其它字段(env 其它键、plugins、hooks、statusLine 等)全部原样保留**。已处于默认状态时直接退出 0,不创建空备份。
+> 💡 **还原默认:** 运行 `/settings-config restore-default` —— 备份当前 `settings.json` 到 `~/.claude/backups/settings-<timestamp>.json`,删除 `language` / `effortLevel` / `permissions.defaultMode` / `env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` 四个字段,**其它字段(env 其它键、plugins、hooks、statusLine 等)全部原样保留**。已处于默认状态时直接退出 0,不创建空备份。
 
-### 📝 /custom:git-commit
+### 📝 /git-commit
 
 分析 Git 改动并生成分子化的 [Conventional Commits](https://www.conventionalcommits.org/) 提交信息,确认后再执行暂存和提交。支持拆分提交、`--amend`、`--signoff`、emoji、指定 type/scope。
 
@@ -168,21 +218,21 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 ```
 # 交互式分析已暂存改动
-/custom:git-commit
+/git-commit
 
 # 暂存区为空时自动 git add -A(仍需二次确认)
-/custom:git-commit --all
+/git-commit --all
 
 # 修补上一次提交
-/custom:git-commit --amend
+/git-commit --amend
 
 # 使用 emoji 前缀
-/custom:git-commit --emoji
+/git-commit --emoji
 ```
 
 > ⚠️ **安全边界:** 该 skill **强制用户手动调用**,且每次执行 `git commit` 前都会通过 `AskUserQuestion` 二次确认。不会擅自运行构建、测试或改写未授权的改动。
 
-### 🧩 /custom:coding-spec
+### 🧩 /coding-spec
 
 编码实施阶段的自动触发规范:优先最小可行方案,先问需求是否真实存在(YAGNI),复用仓库已有代码,优先标准库与平台原生特性,只在必要时写刚好够用的代码。
 
@@ -194,7 +244,7 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 > 💡 不用于业务分析、方案设计或纯文档请求。
 
-### 🧹 /custom:purge-session
+### 🧹 /purge-session
 
 彻底清理单个 Claude Code 历史会话在本地留下的所有痕迹:transcripts、file history、tasks、telemetry、jobs、history entries 以及 dangling 的 `lastSessionId` 引用。
 
@@ -202,10 +252,10 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 
 ```
 # 交互式列出并选择要清理的会话
-/custom:purge-session
+/purge-session
 
 # 直接指定会话 ID 或显示名
-/custom:purge-session <session-id-or-name>
+/purge-session <session-id-or-name>
 ```
 
 #### 安全边界
@@ -216,7 +266,7 @@ Claude Code 实用技能插件 —— 定制与黑科技合集。
 - 所有删除路径限制在配置的 Claude 数据目录内。
 - 可传入 `--backup` 在改写 `.claude.json` 和 `history.jsonl` 前自动备份。
 
-### 🖊️ /custom:humanizer-zh
+### 🖊️ /humanizer-zh
 
 把中文文本从「像模型拼出来的稿子」改成「像中文母语者真的写出来的文章」:去翻译腔、空泛大词、机械结构、排版腔和判断腔,同时保留原文事实、立场和信息密度。可选叠加 8 位中文作者的声音(李笑来、鹤老师、罗振宇、吴军、李尚龙、何帆、冯唐、刘子超)。
 

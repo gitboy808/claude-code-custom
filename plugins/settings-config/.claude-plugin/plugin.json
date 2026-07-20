@@ -1,0 +1,8 @@
+{
+  "name": "settings-config",
+  "version": "1.0.0",
+  "description": "Configure core Claude Code settings with guided presets",
+  "author": {
+    "name": "gitboy808"
+  }
+}

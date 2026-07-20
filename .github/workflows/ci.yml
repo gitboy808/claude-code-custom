@@ -6,6 +6,30 @@ on:
   pull_request:
 
 jobs:
+  validate-plugins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install --global @anthropic-ai/claude-code
+
+      - name: Validate marketplace and plugins
+        shell: bash
+        run: |
+          claude plugin validate --strict .
+          for plugin in plugins/*; do
+            claude plugin validate --strict "$plugin"
+          done
+
+      - name: Validate Agent Skills discovery
+        shell: bash
+        run: |
+          npx --yes skills add "$PWD" --agent claude-code --list > /tmp/skills-list
+          for skill in statusline settings-config git-commit coding-spec purge-session humanizer-zh; do
+            grep -Fq "$skill" /tmp/skills-list
+          done
+
   verify-statusline:
     strategy:
       matrix:

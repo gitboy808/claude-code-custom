@@ -1,0 +1,8 @@
+{
+  "name": "statusline",
+  "version": "1.0.0",
+  "description": "Generate and install a customizable Claude Code statusline",
+  "author": {
+    "name": "gitboy808"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "purge-session",
+  "version": "1.0.0",
+  "description": "Safely purge a Claude Code session from local storage",
+  "author": {
+    "name": "gitboy808"
+  }
+}

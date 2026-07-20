@@ -7,7 +7,7 @@
 //   bun configure.mjs --elements language,effortLevel --install       # subset
 //   bun configure.mjs --restore-default                               # backup + delete managed keys
 //
-// Pattern modeled after skills/statusline/scripts/generate.mjs (elements.includes,
+// Pattern modeled after the statusline plugin generator (elements.includes,
 // delete + writeFileSync, ISO-timestamped backup, idempotent exit).
 
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'fs'
