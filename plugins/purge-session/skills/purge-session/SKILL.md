@@ -9,13 +9,13 @@ Purge all local traces of a single Claude Code session — transcripts, file his
 
 ## Script Directory
 
-All scripts live in `scripts/` next to this file. Replace `${SKILL_DIR}` with this skill's directory.
+All scripts live in `scripts/` next to this file. Claude Code expands `${CLAUDE_SKILL_DIR}` to this skill's directory.
 
 | Script | Purpose |
 |--------|---------|
 | `scripts/purge.mjs` | List, dry-run, and purge sessions |
 
-Run with: `npx -y bun ${SKILL_DIR}/scripts/purge.mjs <args>`
+Run with: `npx -y bun ${CLAUDE_SKILL_DIR}/scripts/purge.mjs <args>`
 
 ## Workflow
 
@@ -26,7 +26,7 @@ Run with: `npx -y bun ${SKILL_DIR}/scripts/purge.mjs <args>`
    - **Completion criterion**: one normalized `sessionId` is selected.
 
 2. **Dry-run**
-   - Run `npx -y bun ${SKILL_DIR}/scripts/purge.mjs --dry-run <session-id>`.
+   - Run `npx -y bun ${CLAUDE_SKILL_DIR}/scripts/purge.mjs --dry-run <session-id>`.
    - Present the JSON result grouped by what would be deleted and rewritten.
    - **Completion criterion**: user sees the plan.
 
@@ -35,7 +35,7 @@ Run with: `npx -y bun ${SKILL_DIR}/scripts/purge.mjs <args>`
    - **Completion criterion**: exact confirmation received.
 
 4. **Execute**
-   - Run `npx -y bun ${SKILL_DIR}/scripts/purge.mjs --execute <session-id>`.
+   - Run `npx -y bun ${CLAUDE_SKILL_DIR}/scripts/purge.mjs --execute <session-id>`.
    - Add `--backup` if the user asked for backups.
    - **Completion criterion**: script exits 0 and prints the final JSON.
 
