@@ -4,41 +4,25 @@
     "name": "gitboy808"
   },
   "metadata": {
-    "description": "Individually installable Claude Code utility skills"
+    "description": "Claude Code configuration and session-management plugins"
   },
   "renames": {
-    "custom": null
+    "custom": null,
+    "statusline": "settings-config",
+    "git-commit": null,
+    "coding-spec": null,
+    "humanizer-zh": null
   },
   "plugins": [
     {
-      "name": "statusline",
-      "description": "Generate and install a customizable Claude Code statusline",
-      "source": "./plugins/statusline"
-    },
-    {
       "name": "settings-config",
-      "description": "Configure core Claude Code settings with guided presets",
+      "description": "Configure Claude Code settings and generate a customizable statusline",
       "source": "./plugins/settings-config"
-    },
-    {
-      "name": "git-commit",
-      "description": "Create atomic Conventional Commits from repository changes",
-      "source": "./plugins/git-commit"
-    },
-    {
-      "name": "coding-spec",
-      "description": "Apply minimal, YAGNI-oriented coding implementation rules",
-      "source": "./plugins/coding-spec"
     },
     {
       "name": "purge-session",
       "description": "Safely purge a Claude Code session from local storage",
       "source": "./plugins/purge-session"
-    },
-    {
-      "name": "humanizer-zh",
-      "description": "Rewrite Chinese prose into natural native expression",
-      "source": "./plugins/humanizer-zh"
     }
   ]
 }

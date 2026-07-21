@@ -1,6 +1,6 @@
 # 🛠️ claude-code-custom
 
-Claude Code 实用技能仓库。支持通过 Agent Skills 使用短命令，也保留 Claude Code marketplace 分发。
+Claude Code 实用技能仓库。支持通过 Agent Skills 使用短命令，并为配置与会话管理能力保留 marketplace 分发。
 
 ## 📦 安装
 
@@ -34,55 +34,55 @@ npx skills add gitboy808/claude-code-custom \
 | Coding Spec | 自动触发，也可调用 `/coding-spec` |
 | Purge Session | `/purge-session` |
 | Humanizer ZH | 自动触发，也可调用 `/humanizer-zh` |
+| Skill Creator | 自动触发，也可调用 `/skill-creator` |
 
-### Claude Code Marketplace（可选）
+### Claude Code Marketplace（仅两项插件）
 
-需要 `/plugin` UI、scope 管理或独立 semver 时，可以继续使用 marketplace：
+需要 `/plugin` UI、scope 管理或独立 semver 时，可以安装以下两个插件：
 
 ```bash
 /plugin marketplace add gitboy808/claude-code-custom
 ```
 
-| 插件 | 安装命令 | 调用方式 |
-|------|----------|----------|
-| Statusline | `/plugin install statusline@gitboy808-claude-code-custom` | `/statusline:statusline` |
-| Settings Config | `/plugin install settings-config@gitboy808-claude-code-custom` | `/settings-config:settings-config` |
-| Git Commit | `/plugin install git-commit@gitboy808-claude-code-custom` | `/git-commit:git-commit` |
-| Coding Spec | `/plugin install coding-spec@gitboy808-claude-code-custom` | 自动触发，也可调用 `/coding-spec:coding-spec` |
-| Purge Session | `/plugin install purge-session@gitboy808-claude-code-custom` | `/purge-session:purge-session` |
-| Humanizer ZH | `/plugin install humanizer-zh@gitboy808-claude-code-custom` | 自动触发，也可调用 `/humanizer-zh:humanizer-zh` |
+| 插件 | 包含的技能 | 安装命令 | 调用方式 |
+|------|------------|----------|----------|
+| Settings Config | Settings Config、Statusline | `/plugin install settings-config@gitboy808-claude-code-custom` | `/settings-config:settings-config`、`/settings-config:statusline` |
+| Purge Session | Purge Session | `/plugin install purge-session@gitboy808-claude-code-custom` | `/purge-session:purge-session` |
 
 > 💡 安装时 Claude Code 会询问作用域:user(全局)/ project(随仓库共享)/ local(本仓库私有)。由 `claude plugin install --scope {user|project|local}` 或 `/plugin` UI 交互式选择。
 
-> ⚠️ Agent Skills 和 marketplace 请选择一种安装方式。同一个能力安装两份不会覆盖，但会让 Claude 同时看到无命名空间和插件命名空间两个版本。
+> ⚠️ 对 Settings Config、Statusline、Purge Session，Agent Skills 和 marketplace 请选择一种安装方式。同一个能力安装两份不会覆盖，但会让 Claude 同时看到无命名空间和插件命名空间两个版本。
 
-### 从旧版 `custom` 插件迁移
+### Marketplace 结构迁移
 
-旧的 bundle 已移除。先卸载它，再按推荐方式安装所需 skill：
+Claude Code 2.1.193 及以上会根据 marketplace 的 `renames` 自动处理旧安装：`statusline` 插件迁移为 `settings-config`，`custom`、`git-commit`、`coding-spec`、`humanizer-zh` 插件条目移除。后三项仍可通过 Agent Skills 安装：
 
 ```bash
-/plugin uninstall custom@gitboy808-claude-code-custom
-npx skills add gitboy808/claude-code-custom --agent claude-code --skill statusline --yes
+/plugin marketplace update gitboy808-claude-code-custom
+npx skills add gitboy808/claude-code-custom \
+  --agent claude-code \
+  --skill git-commit coding-spec humanizer-zh \
+  --yes
 ```
 
 ## 🔄 本地开发与发布
 
-Marketplace 安装会把插件复制到 `~/.claude/plugins/cache`，不会直接读取 working tree。本地调试时直接加载目标插件目录：
+Marketplace 安装会把插件复制到 `~/.claude/plugins/cache`，不会直接读取 working tree。本地调试组合插件时直接加载其目录：
 
 ```bash
-claude --plugin-dir ./plugins/statusline
+claude --plugin-dir ./plugins/settings-config
 ```
 
 | 场景 | 操作 |
 |------|------|
-| 校验 marketplace 和插件 | `claude plugin validate --strict .`，再校验对应的 `plugins/<plugin>` |
+| 校验 marketplace 和插件 | `claude plugin validate --strict .`，再校验 `plugins/settings-config` 与 `plugins/purge-session` |
 | 校验 Agent Skills 发现 | `npx skills add . --agent claude-code --list` |
-| 调试 working tree | `claude --plugin-dir ./plugins/<plugin>` |
+| 调试 working tree | `claude --plugin-dir ./plugins/settings-config` 或 `claude --plugin-dir ./plugins/purge-session` |
 | 正式发布 | bump 已修改插件的 `plugin.json` semver，commit 并 push；用户运行 `/plugin marketplace update`、`/plugin update <plugin>@gitboy808-claude-code-custom` 和 `/reload-plugins` |
 
 ## 🎮 技能列表
 
-> 下文使用 Agent Skills 短命令。Marketplace 用户将 `/name` 替换为 `/name:name`。
+> 下文使用 Agent Skills 短命令。Marketplace 用户调用 Settings Config、Statusline 或 Purge Session 时，以安装表中的命名空间命令为准。
 
 ### 📊 /statusline
 
