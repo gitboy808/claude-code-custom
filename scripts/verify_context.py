@@ -12,7 +12,7 @@ ELEMENT_SETS = [
     "model,context,effort,git,dir",
     "model,context,cost,effort,style,git,dir,worktree,vim",
 ]
-GENERATOR = "plugins/statusline/skills/statusline/scripts/generate.mjs"
+GENERATOR = "plugins/settings-config/skills/statusline/scripts/generate.mjs"
 
 IS_WINDOWS = sys.platform == "win32"
 
