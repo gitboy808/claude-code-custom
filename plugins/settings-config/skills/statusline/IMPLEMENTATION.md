@@ -5,10 +5,10 @@
 能力清单（列、预设、主题、effort 图标）由脚本自描述，避免文档与代码重复。查询命令：
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --help
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-columns
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-presets
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-effort-icons
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --help
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --list-columns
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --list-presets
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --list-effort-icons
 ```
 
 ## CLI Flags
@@ -17,13 +17,13 @@ npx -y bun ${SKILL_DIR}/scripts/generate.mjs --list-effort-icons
 
 ```bash
 # Preview generated script
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme gruvbox
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme gruvbox
 
 # Generate and install
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme dracula --install
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --elements model,context,effort,git,dir --theme dracula --install
 
 # Restore Claude Code's default (empty) status line
-npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
+npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --restore-default
 ```
 
 `--install` 写入 `settings.json` 的 `statusLine.command` 为绝对路径。

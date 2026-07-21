@@ -9,7 +9,7 @@ description: 自定义 Claude Code statusline（状态栏）的列、主题与 e
 
 ## Script Directory
 
-脚本位于 `${SKILL_DIR}/scripts/`。运行前将 `${SKILL_DIR}` 替换为本技能目录。生成器为 `${SKILL_DIR}/scripts/generate.mjs`。
+脚本位于 `${CLAUDE_SKILL_DIR}/scripts/`。Claude Code 会将 `${CLAUDE_SKILL_DIR}` 自动展开为本技能目录。
 
 ## Workflow
 
@@ -35,11 +35,11 @@ description: 自定义 Claude Code statusline（状态栏）的列、主题与 e
 4. **执行**
    - install：
      ```bash
-     npx -y bun ${SKILL_DIR}/scripts/generate.mjs --elements <list> --theme <theme> --install
+     npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --elements <list> --theme <theme> --install
      ```
    - restore：
      ```bash
-     npx -y bun ${SKILL_DIR}/scripts/generate.mjs --restore-default
+     npx -y bun ${CLAUDE_SKILL_DIR}/scripts/generate.mjs --restore-default
      ```
    - **完成标准**：生成器退出码为 0。
 
